@@ -14,7 +14,7 @@ export const up = async () => {
       excerpt TEXT,
       featured_image TEXT NOT NULL,
       category_id UUID NOT NULL REFERENCES posts_categories(id),
-      author_id UUID NOT NULL REFERENCES admins(id),
+      author_id TEXT NOT NULL REFERENCES "user"(id),
       status TEXT NOT NULL CHECK (status IN ('draft', 'published')) DEFAULT 'draft',
       published_at TIMESTAMP,
       created_at TIMESTAMP NOT NULL DEFAULT now(),

@@ -5,12 +5,15 @@ const dbURL = process.env.DATABASE_URL;
 
 if (!dbURL) {
   throw new Error(
-    "DATBASE_URL environment variable is required to connect to db!"
+    "DATABASE_URL environment variable is required to connect to db!"
   );
 }
 
 const pool = new Pool({
   connectionString: dbURL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
 
 export const auth = betterAuth({
