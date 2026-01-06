@@ -16,13 +16,13 @@ export async function proxy(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname;
 
-  if (pathname === "/login" && session) {
-    return NextResponse.redirect(new URL("/", request.url));
-  }
+  // if (pathname === "/login" && session) {
+  //   return NextResponse.redirect(new URL("/", request.url));
+  // }
 
-  if (pathname !== "/login" && !session) {
-    return NextResponse.redirect(new URL("/", request.url));
-  }
+  // if (pathname !== "/login" && !session) {
+  //   return NextResponse.redirect(new URL("/login", request.url));
+  // }
 
   return NextResponse.next();
 }

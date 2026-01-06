@@ -1,4 +1,4 @@
-import { sql } from "../db";
+import { sql } from "./db";
 import { randomUUID } from "crypto";
 import argon2 from "argon2";
 
@@ -41,7 +41,7 @@ export const up = async () => {
     )
     VALUES (
       ${randomUUID()},
-      ${email},
+      ${id},
       'credentials',
       ${id},
       ${passwordHash}
