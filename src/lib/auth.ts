@@ -18,4 +18,7 @@ const pool = new Pool({
 
 export const auth = betterAuth({
   database: pool,
+  emailAndPassword: {
+    enabled: true,
+  },
 });
