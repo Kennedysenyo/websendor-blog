@@ -7,22 +7,22 @@ export const up = async () => {
 
   await sql`
     CREATE TABLE IF NOT EXISTS posts (
-      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-      title TEXT NOT NULL,
-      slug TEXT UNIQUE NOT NULL,
-      content_md TEXT NOT NULL,
-      excerpt TEXT,
-      featured_image TEXT NOT NULL,
-      category_id UUID NOT NULL REFERENCES posts_categories(id),
-      author_id TEXT NOT NULL REFERENCES "user"(id),
-      status TEXT NOT NULL CHECK (status IN ('draft', 'published')) DEFAULT 'draft',
-      published_at TIMESTAMP,
-      created_at TIMESTAMP NOT NULL DEFAULT now(),
-      updated_at TIMESTAMP NOT NULL DEFAULT now(),
+      "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      "title" TEXT NOT NULL,
+      "slug" TEXT UNIQUE NOT NULL,
+      "contentMd" TEXT NOT NULL,
+      "excerpt" TEXT,
+      "featuredImage" TEXT NOT NULL,
+      "categoryId" UUID NOT NULL REFERENCES posts_categories(id),
+      "authorId" TEXT NOT NULL REFERENCES "user"(id),
+      "status" TEXT NOT NULL CHECK (status IN ('draft', 'published')) DEFAULT 'draft',
+      "publishedAt" TIMESTAMP,
+      "createdAt" TIMESTAMP NOT NULL DEFAULT now(),
+      "updatedAt" TIMESTAMP NOT NULL DEFAULT now(),
       CHECK (
-        (status = 'draft' AND published_at IS NULL)
+        (status = 'draft' AND "publishedAt" IS NULL)
         OR
-        (status = 'published' AND published_at IS NOT NULL)
+        (status = 'published' AND "publishedAt" IS NOT NULL)
       )
     );
   `;

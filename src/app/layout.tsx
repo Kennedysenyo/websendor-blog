@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
+// import { auth } from "@/lib/auth";
+// import { redirect } from "next/navigation";
 
 const geistSans = Inter({
   variable: "--font-inter",
@@ -17,11 +19,17 @@ export const metadata: Metadata = {
   title: "Websendor Blog",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // const session = await auth.api.getSession();
+
+  // if (!session) {
+  //   redirect("/login");
+  // }
+
   return (
     <html lang="en">
       <body

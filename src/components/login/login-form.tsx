@@ -1,26 +1,49 @@
 "use client";
 
 import { LogIn } from "lucide-react";
-import { useState } from "react";
+import { ChangeEvent, useActionState, useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Spinner } from "../ui/spinner";
-interface FormStateType {
-  errorMessage: string | null;
-  success: boolean;
-}
+import { useRouter } from "next/navigation";
+import { FormStateType, validateLogin } from "@/actions/login";
+
 export function LoginForm() {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [state, setState] = useState<FormStateType>({
+  const router = useRouter();
+
+  const initialState: FormStateType = {
+    errors: {},
     errorMessage: null,
     success: false,
+  };
+
+  const [formFields, setFormFields] = useState({
+    email: "",
+    password: "",
   });
 
-  const handleFormChange = () => {};
+  const handleFormChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormFields((prev) => ({ ...prev, [name]: value }));
+  };
 
-  const handleLogin = () => {};
+  const [state, formAction, isPending] = useActionState(
+    validateLogin,
+    initialState
+  );
+
+  useEffect(() => {
+    if (state.success) {
+      setFormFields({
+        email: "",
+        password: "",
+      });
+      router.replace("/");
+    }
+  }, [state.success, router]);
+
   return (
-    <div className="w-full min-h-screen flex justify-center items-center">
-      <div className="bg-white p-8 md:p-12 rounded-3xl shadow-2xl border border-gray-100">
+    <div className="w-full min-h-screen flex justify-center items-center p-4">
+      <div className="bg-white p-8 md:p-12 rounded-3xl shadow-2xl border border-gray-100 w-full sm:max-w-[500px]">
         <h3 className="text-2xl font-serif font-bold text-brand-blue mb-8">
           Login
         </h3>
@@ -30,7 +53,7 @@ export function LoginForm() {
           </p>
         )}
 
-        <form onSubmit={handleLogin} className="space-y-6">
+        <form action={formAction} className="space-y-6">
           <div>
             <label
               htmlFor="email"
@@ -44,7 +67,14 @@ export function LoginForm() {
               name="email"
               className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand-green focus:ring-4 focus:ring-brand-green/5 outline-none transition-all"
               placeholder="john@doe.com"
+              onChange={handleFormChange}
+              value={formFields.email}
             />
+            {state.errors.email && (
+              <small className="text-xs -mt-1 text-red-500">
+                {state.errors.email}
+              </small>
+            )}
           </div>
           <div>
             <label
@@ -58,16 +88,22 @@ export function LoginForm() {
               type="password"
               name="password"
               className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand-green focus:ring-4 focus:ring-brand-green/5 outline-none transition-all"
+              onChange={handleFormChange}
+              value={formFields.password}
             />
+            {state.errors.password && (
+              <small className="text-xs -mt-1 text-red-500">
+                {state.errors.password}
+              </small>
+            )}
           </div>
-
           <Button
             type="submit"
-            disabled={isLoading}
+            disabled={isPending}
             className="cursor-pointer w-full bg-brand-blue hover:bg-brand-blue/90 text-white rounded-xl h-14 text-lg font-bold transition-all shadow-lg hover:shadow-brand-blue/20"
           >
-            {isLoading ? (
-              <Spinner />
+            {isPending ? (
+              <Spinner className="ml-2 h-5 w-5" />
             ) : (
               <>
                 <LogIn className="ml-2 h-5 w-5" />

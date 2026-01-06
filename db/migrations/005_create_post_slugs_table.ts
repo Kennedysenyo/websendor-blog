@@ -7,24 +7,24 @@ export const up = async () => {
 
   await sql`
     CREATE TABLE IF NOT EXISTS post_slugs (
-      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-      post_id UUID NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
-      slug TEXT NOT NULL,
-      is_current BOOLEAN NOT NULL DEFAULT true,
-      created_at TIMESTAMP NOT NULL DEFAULT now()
+      "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      "postId" UUID NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+      "slug" TEXT NOT NULL,
+      "isCurrent" BOOLEAN NOT NULL DEFAULT true,
+      "createdAt" TIMESTAMP NOT NULL DEFAULT now()
     );
   `;
 
   // ensure one current slug per post
   await sql`
     CREATE UNIQUE INDEX IF NOT EXISTS post_slugs_one_current
-    ON post_slugs (post_id)
-    WHERE is_current = true;
+    ON post_slugs ("postId")
+    WHERE "isCurrent" = true;
   `;
 
   // speed up slug lookups
   await sql`
     CREATE INDEX IF NOT EXISTS post_slugs_slug_idx
-    ON post_slugs (slug);
+    ON post_slugs ("slug");
   `;
 };

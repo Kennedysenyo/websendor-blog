@@ -12,12 +12,12 @@ export const up = async () => {
   // 1. Insert user
   await sql`
     INSERT INTO "user" (
-      id,
-      name,
-      email,
-      email_verified,
-      role,
-      is_active
+      "id",
+      "name",
+      "email",
+      "emailVerified",
+      "role",
+      "isActive"
     )
     VALUES (
       ${id},
@@ -27,17 +27,17 @@ export const up = async () => {
       'super_admin',
       true
     )
-    ON CONFLICT (email) DO NOTHING;
+    ON CONFLICT ("email") DO NOTHING;
   `;
 
   // 2. Insert password-based account (Better Auth expects this)
   await sql`
     INSERT INTO account (
-      id,
-      account_id,
-      provider_id,
-      user_id,
-      password
+      "id",
+      "accountId",
+      "providerId",
+      "userId",
+      "password"
     )
     VALUES (
       ${randomUUID()},
