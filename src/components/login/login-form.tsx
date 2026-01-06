@@ -39,7 +39,7 @@ export function LoginForm() {
       });
       router.replace("/");
     }
-  }, [state.success, router]);
+  }, [state, state.success, router]);
 
   return (
     <div className="w-full min-h-screen flex justify-center items-center p-4">

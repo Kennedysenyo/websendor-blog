@@ -12,8 +12,9 @@ export const GET = async () => {
       },
     });
 
-    console.log("Function call returned ...");
     console.log(data);
+
+    console.log("Function call returned ...");
 
     return NextResponse.json("User created successfully", { status: 200 });
   } catch (error) {

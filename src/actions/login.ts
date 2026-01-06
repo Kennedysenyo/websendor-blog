@@ -15,7 +15,10 @@ export interface FormStateType {
 }
 
 // Server-side login using Better Auth
-const login = async (email: string, password: string) => {
+const login = async (
+  email: string,
+  password: string
+): Promise<string | null> => {
   const baseUrl = process.env.BETTER_AUTH_URL;
   if (!baseUrl) {
     throw new Error(
@@ -28,10 +31,24 @@ const login = async (email: string, password: string) => {
       body: { email, password, rememberMe: true },
       headers: await headers(),
     });
+
+    console.log("this is from login");
     console.log(result);
+
+    // if (result) {
+    //   if (result.user.emailVerified) {
+    //     return null;
+    //   } else {
+    //     return "Email not verified! (check email and verify)";
+    //   }
+    // }
     return null;
-  } catch (err) {
-    return "Login failed. Please check your credentials.";
+  } catch (error) {
+    if (error instanceof Error) {
+      return error.message;
+    }
+    return error as string;
+    // return "Login failed. Please check your credentials.";
   }
 };
 

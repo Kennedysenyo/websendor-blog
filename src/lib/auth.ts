@@ -21,6 +21,8 @@ export const auth = betterAuth({
   database: pool,
   emailAndPassword: {
     enabled: true,
+    requireEmailVerification: true,
   },
+
   plugins: [nextCookies()],
 });
