@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
-// import { auth } from "@/lib/auth";
-// import { redirect } from "next/navigation";
 
 const geistSans = Inter({
   variable: "--font-inter",
@@ -24,16 +22,10 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // const session = await auth.api.getSession();
-
-  // if (!session) {
-  //   redirect("/login");
-  // }
-
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased `}
       >
         {children}
       </body>

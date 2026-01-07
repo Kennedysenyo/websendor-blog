@@ -13,7 +13,7 @@ export default async function Home() {
   }
 
   return (
-    <div className="flex flex-col items-center min-h-screen justify-center gap-4">
+    <div className="flex flex-col justify-center items-center min-h-full">
       <p>Welcome {user?.name}</p>
       <LogOutButton />
     </div>
