@@ -2,36 +2,12 @@ import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-  SidebarGroup,
-  SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { FileText, LayoutDashboard, Settings, Users2 } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import LogOutButton from "./logout-button";
 
-const sidebarContent = [
-  {
-    name: "Dashboard",
-    icon: LayoutDashboard,
-    url: "/",
-  },
-  {
-    name: "Posts",
-    icon: FileText,
-    url: "/posts",
-  },
-  {
-    name: "Users",
-    icon: Users2,
-    url: "/users",
-  },
-  {
-    name: "Settings",
-    icon: Settings,
-    url: "/settings",
-  },
-];
+import Image from "next/image";
+
+import LogOutButton from "./logout-button";
+import { SidebarMenu } from "./sidebar-menu";
 
 export function AppSidebar() {
   return (
@@ -45,23 +21,7 @@ export function AppSidebar() {
             Websendor
           </span>
         </div>
-        <SidebarGroup className="space-y-4 flex-1">
-          {sidebarContent.map((sidebar) => (
-            <SidebarMenuItem
-              key={sidebar.name}
-              className="shadow-md hover:bg-brand-blue/90 hover:text-white transition-all duration-300 rounded-md"
-            >
-              <Link
-                href={sidebar.url}
-                className="w-full flex gap-2 items-center justify-content px-2 py-4"
-              >
-                <sidebar.icon className=" w-6 h-6" />
-                <span>{sidebar.name}</span>
-              </Link>
-            </SidebarMenuItem>
-          ))}
-        </SidebarGroup>
-
+        <SidebarMenu />
         <SidebarFooter>
           <LogOutButton />
         </SidebarFooter>
