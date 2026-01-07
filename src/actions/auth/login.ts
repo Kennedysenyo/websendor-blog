@@ -32,8 +32,8 @@ const login = async (
       headers: await headers(),
     });
 
-    console.log("this is from login");
-    console.log(result);
+    // console.log("this is from login");
+    // console.log(result);
 
     return null;
   } catch (error) {
