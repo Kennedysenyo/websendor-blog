@@ -103,7 +103,7 @@ export function LoginForm() {
             className="cursor-pointer w-full bg-brand-blue hover:bg-brand-blue/90 text-white rounded-xl h-14 text-lg font-bold transition-all shadow-lg hover:shadow-brand-blue/20"
           >
             {isPending ? (
-              <Spinner className="ml-2 h-5 w-5" />
+              <Spinner className="ml-2 h-5 w-5 text-center" />
             ) : (
               <>
                 <LogIn className="ml-2 h-5 w-5" />

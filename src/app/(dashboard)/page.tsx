@@ -13,9 +13,8 @@ export default async function Home() {
   }
 
   return (
-    <div className="flex flex-col justify-center items-center min-h-full">
+    <div className=" min-h-full">
       <p>Welcome {user?.name}</p>
-      <LogOutButton />
     </div>
   );
 }

@@ -3,6 +3,7 @@
 import { useTransition } from "react";
 import { Spinner } from "./ui/spinner";
 import { logOut } from "@/actions/auth/logout";
+import { LogOut } from "lucide-react";
 
 function LogOutButton() {
   const [isPending, startTransition] = useTransition();
@@ -15,9 +16,16 @@ function LogOutButton() {
   return (
     <button
       onClick={handleSignout}
-      className="py-2 px-4 bg-brand-blue text-white font-md rounded-md cursor-pointer"
+      className="shadow-md hover:bg-brand-blue/90 hover:text-white transition-all duration-300 rounded-md px-2 py-4 flex gap-2 items-center justify-content"
     >
-      {isPending ? <Spinner className="ml-2 h-5 w-5" /> : "Log out"}
+      {isPending ? (
+        <Spinner className="h-6 w-6" />
+      ) : (
+        <>
+          <LogOut className="h-6 w-6" />
+          <span>LogOut</span>
+        </>
+      )}
     </button>
   );
 }
