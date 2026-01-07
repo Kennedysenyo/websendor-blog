@@ -1,4 +1,4 @@
-import { auth } from "@/lib/auth";
+import { auth } from "@/lib/better-auth/auth";
 import { NextResponse } from "next/server";
 
 export const GET = async () => {

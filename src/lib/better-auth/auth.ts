@@ -1,3 +1,4 @@
+import { sendEmail } from "@/actions/emails/email-verification";
 import { betterAuth } from "better-auth";
 import { nextCookies } from "better-auth/next-js";
 import { Pool } from "pg";
@@ -23,6 +24,14 @@ export const auth = betterAuth({
     enabled: true,
     requireEmailVerification: true,
   },
-
+  emailVerification: {
+    sendVerificationEmail: async ({ user, url, token }, request) => {
+      void sendEmail({
+        to: user.email,
+        subject: "Verify your email address",
+        text: url,
+      });
+    },
+  },
   plugins: [nextCookies()],
 });

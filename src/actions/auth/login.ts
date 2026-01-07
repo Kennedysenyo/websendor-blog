@@ -1,6 +1,6 @@
 "use server";
 
-import { auth } from "@/lib/auth";
+import { auth } from "@/lib/better-auth/auth";
 import { headers } from "next/headers";
 
 interface FormErrors {
@@ -35,13 +35,6 @@ const login = async (
     console.log("this is from login");
     console.log(result);
 
-    // if (result) {
-    //   if (result.user.emailVerified) {
-    //     return null;
-    //   } else {
-    //     return "Email not verified! (check email and verify)";
-    //   }
-    // }
     return null;
   } catch (error) {
     if (error instanceof Error) {

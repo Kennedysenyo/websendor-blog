@@ -5,7 +5,7 @@ import { ChangeEvent, useActionState, useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Spinner } from "../ui/spinner";
 import { useRouter } from "next/navigation";
-import { FormStateType, validateLogin } from "@/actions/login";
+import { FormStateType, validateLogin } from "@/actions/auth/login";
 
 export function LoginForm() {
   const router = useRouter();

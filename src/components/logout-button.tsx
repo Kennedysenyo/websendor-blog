@@ -2,7 +2,7 @@
 
 import { useTransition } from "react";
 import { Spinner } from "./ui/spinner";
-import { logOut } from "@/actions/logout";
+import { logOut } from "@/actions/auth/logout";
 
 function LogOutButton() {
   const [isPending, startTransition] = useTransition();

@@ -1,4 +1,4 @@
-import { auth } from "@/lib/auth";
+import { auth } from "@/lib/better-auth/auth";
 import { headers } from "next/headers";
 
 export async function requireSession() {

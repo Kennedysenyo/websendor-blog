@@ -1,5 +1,5 @@
 import LogOutButton from "@/components/logout-button";
-import { requireSession } from "@/lib/server-auth";
+import { requireSession } from "@/lib/better-auth/server-auth";
 
 export default async function Home() {
   let user;
