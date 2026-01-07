@@ -6,17 +6,17 @@ export async function proxy(request: NextRequest) {
     headers: request.headers,
   });
 
-  // const { pathname } = request.nextUrl;
+  const { pathname } = request.nextUrl;
 
-  // const isLoginPage = pathname === "/login";
+  const isLoginPage = pathname === "/login";
 
-  // if (!session && !isLoginPage) {
-  //   return NextResponse.redirect(new URL("/login", request.url));
-  // }
+  if (!session && !isLoginPage) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
 
-  // if (session && isLoginPage) {
-  //   return NextResponse.redirect(new URL("/", request.url));
-  // }
+  if (session && isLoginPage) {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
 
   return NextResponse.next();
 }
