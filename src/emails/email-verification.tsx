@@ -8,46 +8,35 @@ import {
   Heading,
   Font,
   Section,
+  Link,
 } from "@react-email/components";
-import Link from "next/link";
 
 type Props = {
   email: string;
-  domain: string;
-  text: string;
+  text: string; // this is the verification URL
 };
-// TODO: Make a nicer email template
-export default function EmailVerification(props: Props) {
-  const { email, domain, text } = props;
 
+export default function EmailVerification({ email, text }: Props) {
   return (
     <Html>
       <Head>
         <Font
           fontFamily="Poppins"
           fallbackFontFamily="sans-serif"
-          webFont={{
-            url: `${domain}/fonts/Poppins-Regular.woff2`,
-            format: "woff2",
-          }}
           fontWeight={400}
           fontStyle="normal"
         />
       </Head>
+
       <Body
         style={{
           padding: 0,
           margin: 0,
-          fontFamily: "Poppins sans-serif",
+          fontFamily: "Poppins, sans-serif",
           backgroundColor: "#f8f8f8",
         }}
       >
-        <Container
-          style={{
-            backgroundColor: "#28A745",
-            padding: "1.5rem",
-          }}
-        >
+        <Container style={{ backgroundColor: "#28A745", padding: "1.5rem" }}>
           <Heading
             style={{
               textAlign: "center",
@@ -58,51 +47,31 @@ export default function EmailVerification(props: Props) {
             Websendor
           </Heading>
         </Container>
-        <Container
-          style={{
-            padding: "0 1rem",
-          }}
-        >
-          <Text
-            style={{
-              fontWeight: "500",
-              letterSpacing: "2px",
-            }}
-          >
-            Hello {email},
+
+        <Container style={{ padding: "1rem" }}>
+          <Text>Hello {email},</Text>
+
+          <Text>
+            Please verify your email address to activate your account.
           </Text>
-          <Text
-            style={{
-              color: "#374151",
-            }}
-          ></Text>
 
           <Hr />
+
           <Section>
-            <Text
-              style={{
-                color: "#374151",
-              }}
-            >
-              {text}
-            </Text>
             <Link
-              href={`${domain}/${text}`}
+              href={text}
               target="_blank"
               style={{
-                color: "#0863f5ff",
+                color: "#0863f5",
+                fontWeight: "600",
+                textDecoration: "underline",
               }}
             >
-              Click here to verify your email address
+              Verify your email address
             </Link>
-            <Text
-              style={{
-                color: "#374151",
-              }}
-            >
-              Websendor Team.
-            </Text>
           </Section>
+
+          <Text style={{ marginTop: "1rem" }}>— Websendor Admin</Text>
         </Container>
       </Body>
     </Html>

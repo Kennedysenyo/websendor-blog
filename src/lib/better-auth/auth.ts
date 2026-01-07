@@ -20,18 +20,21 @@ const pool = new Pool({
 
 export const auth = betterAuth({
   database: pool,
-  emailAndPassword: {
-    enabled: true,
-    requireEmailVerification: true,
-  },
+
   emailVerification: {
     sendVerificationEmail: async ({ user, url, token }, request) => {
-      void sendEmail({
+      await sendEmail({
         to: user.email,
         subject: "Verify your email address",
         text: url,
       });
     },
+    autoSignInAfterVerification: true,
+  },
+  emailAndPassword: {
+    enabled: true,
+    sendOnSignUp: true,
+    requireEmailVerification: true,
   },
   plugins: [nextCookies()],
 });

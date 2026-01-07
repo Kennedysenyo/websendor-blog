@@ -3,14 +3,16 @@
 import EmailVerification from "@/emails/email-verification";
 import { resend } from "@/lib/resend/resend";
 
-interface SendData {
+export async function sendEmail({
+  to,
+  subject,
+  text,
+}: {
   to: string;
   subject: string;
   text: string;
-}
-
-export async function sendEmail({ to, subject, text }: SendData) {
-  const domain = process.env.BASE_URl;
+}) {
+  const domain = process.env.BASE_URL;
   if (!domain) {
     throw new Error("BASE_URL is required to send email!");
   }
@@ -19,6 +21,6 @@ export async function sendEmail({ to, subject, text }: SendData) {
     from: "Websendor <noreply@websendor.com>",
     to,
     subject,
-    react: EmailVerification({ email: to, domain, text }),
+    react: EmailVerification({ email: to, text }),
   });
 }
