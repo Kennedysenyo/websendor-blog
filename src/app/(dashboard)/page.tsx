@@ -1,3 +1,4 @@
+import { CardGrid } from "@/components/home/card-grid";
 import { HomeHeader } from "@/components/home/header";
 import { requireSession } from "@/lib/better-auth/server-auth";
 import { redirect } from "next/navigation";
@@ -15,6 +16,7 @@ export default async function Home() {
   return (
     <div className=" min-h-full">
       <HomeHeader name={user?.name!} />
+      <CardGrid />
     </div>
   );
 }
