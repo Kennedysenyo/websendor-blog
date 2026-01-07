@@ -3,29 +3,33 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { FileText, Settings, Users2 } from "lucide-react";
+import { FileText, LayoutDashboard, Settings, Users2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import LogOutButton from "./logout-button";
 
 const sidebarContent = [
   {
+    name: "Dashboard",
+    icon: LayoutDashboard,
+    url: "/",
+  },
+  {
     name: "Posts",
     icon: FileText,
+    url: "/posts",
   },
   {
     name: "Users",
     icon: Users2,
+    url: "/users",
   },
   {
     name: "Settings",
     icon: Settings,
+    url: "/settings",
   },
 ];
 
@@ -48,7 +52,7 @@ export function AppSidebar() {
               className="shadow-md hover:bg-brand-blue/90 hover:text-white transition-all duration-300 rounded-md"
             >
               <Link
-                href="/posts "
+                href={sidebar.url}
                 className="w-full flex gap-2 items-center justify-content px-2 py-4"
               >
                 <sidebar.icon className=" w-6 h-6" />
