@@ -39,7 +39,7 @@ export const SidebarMenu = () => {
           <SidebarMenuItem
             key={sidebar.name}
             className={cn(
-              "shadow-md hover:bg-brand-blue/90 hover:text-white transition-all duration-300 rounded-md",
+              "shadow-md bg-white hover:bg-brand-blue/90 hover:text-white transition-all duration-300 rounded-md",
               pathname === sidebar.url && "bg-brand-blue text-white"
             )}
           >

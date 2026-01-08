@@ -2,6 +2,7 @@ import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
+  SidebarTrigger,
 } from "@/components/ui/sidebar";
 
 import Image from "next/image";
@@ -11,8 +12,8 @@ import { SidebarMenu } from "./sidebar-menu";
 
 export function AppSidebar() {
   return (
-    <Sidebar>
-      <SidebarContent className="flex flex-col">
+    <Sidebar className="">
+      <SidebarContent className="flex flex-col relative">
         <div className="w-full h-[80px] relative flex justify-center items-center rounded-md shadow-md mb-4">
           <div className=" rounded-md relative w-[40px] h-[40px]">
             <Image src="/logo.png" alt="websendor logo" fill />

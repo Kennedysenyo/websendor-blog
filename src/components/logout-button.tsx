@@ -16,7 +16,7 @@ function LogOutButton() {
   return (
     <button
       onClick={handleSignout}
-      className="shadow-md hover:bg-brand-blue/90 hover:text-white transition-all duration-300 rounded-md px-2 py-4 flex gap-2 items-center justify-content"
+      className="shadow-md bg-white hover:bg-brand-blue/90 hover:text-white transition-all duration-300 rounded-md px-2 py-4 flex gap-2 items-center justify-content"
     >
       {isPending ? (
         <Spinner className="h-6 w-6" />
