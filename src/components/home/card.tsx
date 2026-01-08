@@ -21,7 +21,7 @@ export const Card = ({ figure, title, color, icon: Icon }: CardProps) => {
       </p>
       <div className="flex justify-center items-center gap-3 text-white text-shadow-md">
         <Icon className="w-7 h-7" />{" "}
-        <span className=" text-2xl md:text-3xl">{title}</span>
+        <span className=" text-2xl md:text-3xl text-center">{title}</span>
       </div>
       <Icon className="w-40 h-40  absolute -top-7 -right-8 opacity-20" />
     </div>
