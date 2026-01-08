@@ -2,11 +2,114 @@
 import { Save } from "lucide-react";
 import { Button } from "../ui/button";
 import { Spinner } from "../ui/spinner";
-import Image from "next/image";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { MarkdownEditor } from "./markdown-editor";
+import { ImageUploader } from "./image-uploader";
+
+interface FormFields {
+  title: string;
+  slug: string;
+  content: string | undefined;
+  excerpt: string;
+  category: string;
+  featuredImage: string;
+}
+
 export const NewPostForm = () => {
-  const [value, setValue] = useState<string | undefined>(undefined);
+  const [imageUploadErrorMessage, setImageUploadErrorMessage] =
+    useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const [formData, setFormData] = useState<FormFields>({
+    title: "",
+    slug: "",
+    content: undefined,
+    excerpt: "",
+    category: "",
+    featuredImage: "",
+  });
+
+  const handleFormFieldChange = (
+    e:
+      | ChangeEvent<HTMLInputElement>
+      | ChangeEvent<HTMLTextAreaElement>
+      | ChangeEvent<HTMLSelectElement>
+  ) => {
+    const { name, value } = e.currentTarget;
+
+    setFormData((prev) => {
+      const data =
+        name === "title"
+          ? {
+              ...prev,
+              ...{
+                title: value,
+                slug: value.toLowerCase().split(" ").join("-"),
+              },
+            }
+          : { ...prev, [name]: value };
+
+      console.table(data);
+      return data;
+    });
+  };
+
+  const setValue = (value: string | undefined) => {
+    setFormData((prev) => {
+      const data = { ...prev, content: value };
+      console.table(data);
+      return data;
+    });
+  };
+
+  const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (file) {
+      try {
+        setImageUploadErrorMessage("");
+        setIsLoading(true);
+
+        if (formData.featuredImage) {
+          const response = await fetch("/api/posts/new/delete-post-image", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ url: formData.featuredImage }),
+          });
+
+          if (!response.ok) {
+            const errorMessage = await response.json();
+            setImageUploadErrorMessage(errorMessage?.message);
+          }
+        }
+
+        // Upload image to Image to Vercel Blob
+        const imageFormData = new FormData();
+        imageFormData.set("file", file);
+
+        const res = await fetch("/api/posts/new/upload-post-image", {
+          method: "POST",
+          body: imageFormData,
+        });
+
+        if (res.ok) {
+          const { url } = await res.json();
+
+          setFormData((prev) => ({ ...prev, featuredImage: url }));
+        }
+      } catch (error) {
+        if (error instanceof Error) {
+          setImageUploadErrorMessage(error.message);
+        } else {
+          setImageUploadErrorMessage(error as string);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  };
 
   return (
     <div className="w-full flex-1 overflow-hidden p-4">
@@ -32,6 +135,8 @@ export const NewPostForm = () => {
                   type="text"
                   name="title"
                   className="bg-sidebar w-full px-4 py-3 rounded-sm border border-gray-200 focus:border-brand-green focus:ring-4 focus:ring-brand-green/5 outline-none transition-all"
+                  value={formData.title}
+                  onChange={handleFormFieldChange}
                 />
               </div>
               <div>
@@ -46,6 +151,8 @@ export const NewPostForm = () => {
                   type="text"
                   name="slug"
                   className="bg-sidebar w-full px-4 py-3 rounded-sm border border-gray-200 focus:border-brand-green focus:ring-4 focus:ring-brand-green/5 outline-none transition-all"
+                  value={formData.slug}
+                  onChange={handleFormFieldChange}
                 />
               </div>
 
@@ -58,7 +165,7 @@ export const NewPostForm = () => {
                 </label>
 
                 <MarkdownEditor
-                  value={value}
+                  value={formData.content === "" ? undefined : formData.content}
                   setValue={setValue}
                   height={400}
                 />
@@ -76,6 +183,8 @@ export const NewPostForm = () => {
                   rows={4}
                   placeholder="e.g., There are ..."
                   className="bg-sidebar w-full px-4 py-3 rounded-sm border border-gray-200 focus:border-brand-green focus:ring-4 focus:ring-brand-green/5 outline-none transition-all resize-none"
+                  value={formData.excerpt}
+                  onChange={handleFormFieldChange}
                 />
                 <div className="flex">
                   {/* <small className="text-xs text-grey-100 -mt-1 ml-auto">{`${0} / 3,000`}</small> */}
@@ -84,16 +193,17 @@ export const NewPostForm = () => {
 
               <div>
                 <label
-                  htmlFor="service"
+                  htmlFor="category"
                   className="text-sm font-semibold text-brand-blue"
                 >
                   Category
                 </label>
                 <select
-                  id="service"
-                  name="service"
+                  id="category"
+                  name="category"
                   className="w-full px-4 py-3 rounded-sm border border-gray-200 focus:border-brand-green focus:ring-4 focus:ring-brand-green/5 outline-none transition-all bgsidebar invalid:text-gray-100"
-                  defaultValue=""
+                  value={formData.category}
+                  onChange={handleFormFieldChange}
                 >
                   <option disabled hidden value="">
                     Select a Category
@@ -105,24 +215,16 @@ export const NewPostForm = () => {
                 </select>
               </div>
 
-              <div className="flex flex-col gap-2 md:w-1/2">
-                <div className="flex flex-col">
-                  <label
-                    htmlFor="featured-image"
-                    className="text-sm font-semibold text-brand-blue"
-                  >
-                    Featured Image
-                  </label>
-                  <input
-                    id="featured-image"
-                    type="file"
-                    name="featured-image"
-                    className="bg-sidebar px-4 py-3 rounded-sm border border-gray-200 focus:border-brand-green focus:ring-4 focus:ring-brand-green/5 outline-none transition-all"
-                  />
-                </div>
-                <div className=" relative border border-gray-200 w-full aspect-[2/1.3] object-fit-cover">
-                  <Image src={"/"} alt="post image" fill />
-                </div>
+              <div>
+                <input
+                  type="text"
+                  name=""
+                  defaultValue={formData.featuredImage}
+                />
+                <ImageUploader
+                  onChange={handleImageUpload}
+                  src={formData.featuredImage}
+                />
               </div>
             </div>
           </div>
