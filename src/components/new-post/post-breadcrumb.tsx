@@ -20,14 +20,14 @@ const urlList: BreadCrumbType[] = [
 export const NewPostBreadCrumb = () => {
   return (
     <>
-      <div className="p-4 shadow-md bg-sidebar rounded-lg flex flex-col">
+      <div className="p-4  flex flex-col">
         <BreadCrumb urlList={urlList} />
         <h1 className="px-4 text-3xl font-bold text-center">Create New Post</h1>
         <p className="px-8 text-center">
           Fill the form below and submit to preview draft
         </p>
       </div>
-      {/* <hr /> */}
+      <hr />
     </>
   );
 };

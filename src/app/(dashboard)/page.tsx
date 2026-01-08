@@ -14,8 +14,9 @@ export default async function Home() {
   }
 
   return (
-    <div className=" min-h-full">
+    <div className=" min-h-full p-4">
       <HomeHeader name={user?.name!} />
+      <hr />
       <CardGrid />
     </div>
   );
