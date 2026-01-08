@@ -17,6 +17,7 @@
     "@react-email/components": "1.0.3",
     "@uiw/react-markdown-preview": "^5.1.5",
     "@uiw/react-md-editor": "^3.6.0",
+    "@vercel/blob": "^2.0.0",
     "argon2": "^0.44.0",
     "better-auth": "^1.4.10",
     "class-variance-authority": "^0.7.1",
