@@ -1,11 +1,17 @@
+import { NewPostBreadCrumb } from "@/components/new-post/post-breadcrumb";
 import { NewPostForm } from "@/components/new-post/post-form";
+import { requireSession } from "@/lib/better-auth/server-auth";
+import { redirect } from "next/navigation";
 
-export default function NewPostPage() {
+export default async function NewPostPage() {
+  const session = await requireSession();
+
+  if (!session) {
+    redirect("/login");
+  }
   return (
     <div className="h-full flex flex-col">
-      <h1>BREAD CRUMS</h1>
-      <h2>BREAD CRUMS</h2>
-      <h3>BREAD CRUMS</h3>
+      <NewPostBreadCrumb />
       <NewPostForm />
     </div>
   );
