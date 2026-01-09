@@ -10,12 +10,12 @@ interface DataType {
   slug: string;
   content: string;
   excerpt: string;
-  categoryId: string;
   featuredImage: string;
+  categoryId: string;
 }
 export const savePost = async (data: DataType): Promise<ReturnedData> => {
   try {
-    // console.table(data);
+    console.table(data);
 
     const session = await requireSession();
     const authorId = session?.user.id;
@@ -28,7 +28,6 @@ export const savePost = async (data: DataType): Promise<ReturnedData> => {
       !data.slug ||
       !data.content ||
       !data.featuredImage ||
-      !data.categoryId ||
       !data.categoryId
     ) {
       throw new Error("Missing required post fields");

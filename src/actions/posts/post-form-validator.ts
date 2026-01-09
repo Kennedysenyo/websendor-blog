@@ -29,7 +29,7 @@ export const postFormValidator = async (
   const slug = (formData.get("slug") as string).trim();
   const content = (formData.get("content") as string).trim();
   const excerpt = (formData.get("excerpt") as string).trim();
-  const category = formData.get("title") as string;
+  const category = formData.get("category") as string;
   const featuredImage = formData.get("featuredImage") as string;
 
   const errors: FormErrors = {};
@@ -74,13 +74,22 @@ export const postFormValidator = async (
     };
   }
 
+  console.table({
+    title,
+    slug,
+    content,
+    excerpt,
+    featuredImage,
+    categoryId: category,
+  });
+
   const { postId, errorMessage } = await savePost({
     title,
     slug,
     content,
     excerpt,
-    categoryId: category,
     featuredImage,
+    categoryId: category,
   });
 
   if (errorMessage) {

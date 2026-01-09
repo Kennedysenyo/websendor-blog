@@ -142,7 +142,15 @@ export const NewPostForm = ({ categories }: Props) => {
 
   useEffect(() => {
     if (state.success) {
-      router.push(`/posts/${state.returned.postId}`);
+      setFormData({
+        title: "",
+        slug: "",
+        content: undefined,
+        excerpt: "",
+        category: "",
+        featuredImage: "",
+      });
+      router.push(`/posts/${state.returned.postId}/preview`);
     }
   }, [state, router]);
 
@@ -260,6 +268,25 @@ export const NewPostForm = ({ categories }: Props) => {
               </div>
 
               <div>
+                <input
+                  type="text"
+                  name="featuredImage"
+                  className="hidden"
+                  defaultValue={formData.featuredImage}
+                />
+                <ImageUploader
+                  onChange={handleImageUpload}
+                  src={formData.featuredImage}
+                  isLoading={isLoading}
+                />
+                {state.errors.featuredImage && (
+                  <small className="text-xs text-red-500">
+                    {imageUploadErrorMessage}
+                  </small>
+                )}
+              </div>
+
+              <div>
                 <label
                   htmlFor="category"
                   className="text-sm font-semibold text-brand-blue"
@@ -285,25 +312,6 @@ export const NewPostForm = ({ categories }: Props) => {
                 {state.errors.category && (
                   <small className="text-xs text-red-500">
                     {state.errors.category}
-                  </small>
-                )}
-              </div>
-
-              <div>
-                <input
-                  type="text"
-                  name="featuredImage"
-                  className="hidden"
-                  defaultValue={formData.featuredImage}
-                />
-                <ImageUploader
-                  onChange={handleImageUpload}
-                  src={formData.featuredImage}
-                  isLoading={isLoading}
-                />
-                {state.errors.featuredImage && (
-                  <small className="text-xs text-red-500">
-                    {imageUploadErrorMessage}
                   </small>
                 )}
               </div>
