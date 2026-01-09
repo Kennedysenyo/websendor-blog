@@ -2,9 +2,13 @@
 import { Save } from "lucide-react";
 import { Button } from "../ui/button";
 import { Spinner } from "../ui/spinner";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useActionState, useEffect, useState } from "react";
 import { MarkdownEditor } from "./markdown-editor";
 import { ImageUploader } from "./image-uploader";
+import {
+  postFormValidator,
+  ResponseType,
+} from "@/actions/posts/post-form-validator";
 
 interface FormFields {
   title: string;
@@ -35,7 +39,7 @@ export const NewPostForm = () => {
       | ChangeEvent<HTMLTextAreaElement>
       | ChangeEvent<HTMLSelectElement>
   ) => {
-    const { name, value } = e.currentTarget;
+    const { name, value } = e.target;
 
     setFormData((prev) => {
       const data =
@@ -55,11 +59,7 @@ export const NewPostForm = () => {
   };
 
   const setValue = (value: string | undefined) => {
-    setFormData((prev) => {
-      const data = { ...prev, content: value };
-      console.table(data);
-      return data;
-    });
+    setFormData((prev) => ({ ...prev, content: value }));
   };
 
   const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -98,6 +98,9 @@ export const NewPostForm = () => {
           const { url } = await res.json();
 
           setFormData((prev) => ({ ...prev, featuredImage: url }));
+        } else {
+          const { message } = await res.json();
+          setImageUploadErrorMessage(message);
         }
       } catch (error) {
         if (error instanceof Error) {
@@ -111,6 +114,28 @@ export const NewPostForm = () => {
     }
   };
 
+  const initialState: ResponseType = {
+    errors: {},
+    success: false,
+    errorMessage: null,
+  };
+
+  const [state, formAction, isPending] = useActionState(
+    postFormValidator,
+    initialState
+  );
+
+  useEffect(() => {
+    if (state.errors.featuredImage) {
+      setImageUploadErrorMessage(state.errors.featuredImage);
+    }
+  }, [state.errors.featuredImage]);
+
+  useEffect(() => {
+    if (state.success) {
+    }
+  }, [state]);
+
   return (
     <div className="w-full flex-1 overflow-hidden p-4">
       <div className="bg-sidebar rounded-md shadow-md p-2 md:p-4 border border-gray-100 mx-auto flex flex-col h-full  sm:max-w-[900px]">
@@ -120,7 +145,11 @@ export const NewPostForm = () => {
         <span className="py-1 px-4 border border-gray-100 font-semibold text-brand-blue rounded-lg bg-white self-start mb-4">
           Draft
         </span>
-        <form className="flex-1 flex flex-col overflow-hidden ">
+
+        <form
+          action={formAction}
+          className="flex-1 flex flex-col overflow-hidden "
+        >
           <div className="  flex-1  mb-4  overflow-y-auto border border-gray-200">
             <div className="space-y-6 p-2 md:p-4 bg-white">
               <div>
@@ -138,7 +167,13 @@ export const NewPostForm = () => {
                   value={formData.title}
                   onChange={handleFormFieldChange}
                 />
+                {state.errors.title && (
+                  <small className="text-xs text-red-500">
+                    {state.errors.title}
+                  </small>
+                )}
               </div>
+
               <div>
                 <label
                   htmlFor="slug"
@@ -154,21 +189,36 @@ export const NewPostForm = () => {
                   value={formData.slug}
                   onChange={handleFormFieldChange}
                 />
+                {state.errors.slug && (
+                  <small className="text-xs text-red-500">
+                    {state.errors.slug}
+                  </small>
+                )}
               </div>
 
               <div>
                 <label
-                  htmlFor="contentMd"
+                  htmlFor="content"
                   className="text-sm font-semibold text-brand-blue"
                 >
                   Content (Markdown)
                 </label>
-
                 <MarkdownEditor
-                  value={formData.content === "" ? undefined : formData.content}
+                  value={formData.content}
                   setValue={setValue}
                   height={400}
                 />
+                <textarea
+                  className="hidden"
+                  id="content"
+                  name="content"
+                  defaultValue={formData.content}
+                ></textarea>
+                {state.errors.content && (
+                  <small className="text-xs text-red-500">
+                    {state.errors.content}
+                  </small>
+                )}
               </div>
               <div>
                 <label
@@ -186,9 +236,12 @@ export const NewPostForm = () => {
                   value={formData.excerpt}
                   onChange={handleFormFieldChange}
                 />
-                <div className="flex">
-                  {/* <small className="text-xs text-grey-100 -mt-1 ml-auto">{`${0} / 3,000`}</small> */}
-                </div>
+
+                {state.errors.excerpt && (
+                  <small className="text-xs text-red-500">
+                    {state.errors.excerpt}
+                  </small>
+                )}
               </div>
 
               <div>
@@ -213,28 +266,40 @@ export const NewPostForm = () => {
                   <option value="seo">SEO</option>
                   <option value="advertising">Advertising</option>
                 </select>
+                {state.errors.category && (
+                  <small className="text-xs text-red-500">
+                    {state.errors.category}
+                  </small>
+                )}
               </div>
 
               <div>
                 <input
                   type="text"
-                  name=""
+                  name="featuredImage"
+                  className="hidden"
                   defaultValue={formData.featuredImage}
                 />
                 <ImageUploader
                   onChange={handleImageUpload}
                   src={formData.featuredImage}
+                  isLoading={isLoading}
                 />
+                {state.errors.featuredImage && (
+                  <small className="text-xs text-red-500">
+                    {imageUploadErrorMessage}
+                  </small>
+                )}
               </div>
             </div>
           </div>
 
           <Button
             type="submit"
-            disabled={false}
+            disabled={isLoading || isPending}
             className="cursor-pointer w-full bg-brand-blue hover:bg-brand-blue/90 text-white rounded-md h-14 text-lg font-bold transition-all shadow-lg hover:shadow-brand-blue/20"
           >
-            {false ? (
+            {isPending ? (
               <Spinner className="ml-2 h-5 w-5 text-center" />
             ) : (
               <>

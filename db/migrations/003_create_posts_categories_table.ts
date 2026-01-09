@@ -6,11 +6,11 @@ export const up = async () => {
   `;
 
   await sql`
-    CREATE TABLE IF NOT EXISTS posts_categories (
-      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-      name TEXT UNIQUE NOT NULL,
-      slug TEXT UNIQUE NOT NULL,
-      created_at TIMESTAMP NOT NULL DEFAULT now()
+    CREATE TABLE IF NOT EXISTS "posts_categories" (
+      "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      "name" TEXT UNIQUE NOT NULL,
+      "slug" TEXT UNIQUE NOT NULL,
+      "createdAt" TIMESTAMPTZ NOT NULL DEFAULT now()
     );
   `;
 };
