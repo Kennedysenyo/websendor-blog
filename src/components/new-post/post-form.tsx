@@ -9,6 +9,9 @@ import {
   postFormValidator,
   ResponseType,
 } from "@/actions/posts/post-form-validator";
+import { slugify } from "@/utils/slugify";
+import postgres from "postgres";
+import { capitalizeText } from "@/utils/capitalize-text";
 
 interface FormFields {
   title: string;
@@ -19,7 +22,11 @@ interface FormFields {
   featuredImage: string;
 }
 
-export const NewPostForm = () => {
+interface Props {
+  categories: postgres.RowList<postgres.Row[]>;
+}
+
+export const NewPostForm = ({ categories }: Props) => {
   const [imageUploadErrorMessage, setImageUploadErrorMessage] =
     useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -48,7 +55,7 @@ export const NewPostForm = () => {
               ...prev,
               ...{
                 title: value,
-                slug: value.toLowerCase().split(" ").join("-"),
+                slug: slugify(value),
               },
             }
           : { ...prev, [name]: value };
@@ -261,10 +268,11 @@ export const NewPostForm = () => {
                   <option disabled hidden value="">
                     Select a Category
                   </option>
-                  <option value="web-design">Website Design</option>
-                  <option value="development">Development</option>
-                  <option value="seo">SEO</option>
-                  <option value="advertising">Advertising</option>
+                  {categories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {capitalizeText(category.name)}
+                    </option>
+                  ))}
                 </select>
                 {state.errors.category && (
                   <small className="text-xs text-red-500">

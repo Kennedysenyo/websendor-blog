@@ -70,7 +70,7 @@ export const postFormValidator = async (
     slug,
     content,
     excerpt,
-    category,
+    categoryId: category,
     featuredImage,
   });
 

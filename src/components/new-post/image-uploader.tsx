@@ -31,7 +31,7 @@ export const ImageUploader = ({ onChange, src, isLoading }: Props) => {
 
       <div className=" relative border border-gray-200 w-full aspect-[2/1.3] object-fit-cover flex items-center justify-center">
         {isLoading ? (
-          <Spinner className="w-20 h-20 text-brand-green" />
+          <Spinner className="size-15 md:size-20 text-brand-green" />
         ) : (
           src && <Image src={src} alt="post image" fill />
         )}
