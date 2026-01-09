@@ -3,6 +3,7 @@
 import { requireSession } from "@/lib/better-auth/server-auth";
 import { sql } from "../../../db/db";
 import { handleError } from "@/utils/handle-error";
+import { ReturnedData } from "./post-form-validator";
 
 interface DataType {
   title: string;
@@ -12,7 +13,7 @@ interface DataType {
   categoryId: string;
   featuredImage: string;
 }
-export const savePost = async (data: DataType): Promise<string | null> => {
+export const savePost = async (data: DataType): Promise<ReturnedData> => {
   try {
     // console.table(data);
 
@@ -33,11 +34,29 @@ export const savePost = async (data: DataType): Promise<string | null> => {
       throw new Error("Missing required post fields");
     }
 
-    await sql`
-    INSERT INTO "posts" ("title", "slug", "contentMd", "excerpt","featuredImage", "categoryId", "authorId","status")
-    VALUES (${data.title}, ${data.slug}, ${data.content}, ${data.excerpt}, ${data.featuredImage}, ${data.categoryId}, ${authorId}, 'draft');
+    const insertedPost = await sql`
+    INSERT INTO "posts" (
+    "title", 
+    "slug", 
+    "contentMd", 
+    "excerpt",
+    "featuredImage", 
+    "categoryId", 
+    "authorId",
+    "status"
+    )
+    VALUES (
+    ${data.title}, 
+    ${data.slug}, 
+    ${data.content}, 
+    ${data.excerpt}, 
+    ${data.featuredImage}, 
+    ${data.categoryId}, 
+    ${authorId}, 
+    'draft'
+    ) RETURNING id;
     `;
-    return null;
+    return { postId: insertedPost[0].id, errorMessage: null };
   } catch (error) {
     return handleError(error);
   }

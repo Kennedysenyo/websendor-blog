@@ -11,10 +11,15 @@ interface FormErrors {
   featuredImage?: string;
 }
 
+export interface ReturnedData {
+  postId: string | null;
+  errorMessage: string | null;
+}
+
 export interface ResponseType {
   errors: FormErrors;
   success: boolean;
-  errorMessage: string | null;
+  returned: ReturnedData;
 }
 export const postFormValidator = async (
   _prevState: ResponseType,
@@ -62,10 +67,14 @@ export const postFormValidator = async (
   }
 
   if (Object.keys(errors).length > 0) {
-    return { errors, success: true, errorMessage: null };
+    return {
+      errors,
+      success: true,
+      returned: { postId: null, errorMessage: null },
+    };
   }
 
-  const errorMessage = await savePost({
+  const { postId, errorMessage } = await savePost({
     title,
     slug,
     content,
@@ -75,7 +84,15 @@ export const postFormValidator = async (
   });
 
   if (errorMessage) {
-    return { errors: {}, success: true, errorMessage };
+    return {
+      errors: {},
+      success: true,
+      returned: { postId: null, errorMessage },
+    };
   }
-  return { errors: {}, success: true, errorMessage: null };
+  return {
+    errors: {},
+    success: true,
+    returned: { postId, errorMessage: null },
+  };
 };

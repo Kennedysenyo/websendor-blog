@@ -124,7 +124,7 @@ export const NewPostForm = ({ categories }: Props) => {
   const initialState: ResponseType = {
     errors: {},
     success: false,
-    errorMessage: null,
+    returned: { postId: null, errorMessage: null },
   };
 
   const [state, formAction, isPending] = useActionState(
