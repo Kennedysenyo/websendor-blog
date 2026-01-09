@@ -53,7 +53,7 @@ export const NewPostForm = () => {
             }
           : { ...prev, [name]: value };
 
-      console.table(data);
+      // console.table(data);
       return data;
     });
   };

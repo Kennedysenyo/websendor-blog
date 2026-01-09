@@ -14,9 +14,7 @@ export function MarkdownEditor({ value, setValue, height }: MDEditorProps) {
     <div data-color-mode="light">
       <MDEditor
         value={value}
-        onChange={() => {
-          setValue(value);
-        }}
+        onChange={setValue}
         height={height}
         preview="live"
       />
