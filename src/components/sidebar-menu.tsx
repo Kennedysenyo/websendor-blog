@@ -84,7 +84,11 @@ export const SidebarMenu = () => {
                 onClick={() => {
                   setIsOpen((prev) => !prev);
                 }}
-                className="w-full group/menu-item flex gap-2 shadow-md items-center justify-content px-2 py-4 hover:bg-brand-blue/90 hover:text-white transition-all duration-300 rounded-md"
+                className={cn(
+                  "w-full bg-white flex gap-2 shadow-md items-center justify-content px-2 py-4 hover:bg-brand-blue/90 hover:text-white transition-all duration-300 rounded-md",
+                  ["/posts", "/posts/categories"].includes(pathname) &&
+                    "bg-brand-blue text-white"
+                )}
               >
                 <sidebar.icon className=" w-6 h-6" />
                 <span>{sidebar.name}</span>
