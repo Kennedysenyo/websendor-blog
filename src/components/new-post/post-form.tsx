@@ -12,6 +12,7 @@ import {
 import { slugify } from "@/utils/slugify";
 import postgres from "postgres";
 import { capitalizeText } from "@/utils/capitalize-text";
+import { useRouter } from "next/navigation";
 
 interface FormFields {
   title: string;
@@ -27,6 +28,7 @@ interface Props {
 }
 
 export const NewPostForm = ({ categories }: Props) => {
+  const router = useRouter();
   const [imageUploadErrorMessage, setImageUploadErrorMessage] =
     useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -140,15 +142,21 @@ export const NewPostForm = ({ categories }: Props) => {
 
   useEffect(() => {
     if (state.success) {
+      router.push(`/posts/${state.returned.postId}`);
     }
-  }, [state]);
+  }, [state, router]);
 
   return (
     <div className="w-full flex-1 overflow-hidden p-4">
       <div className="bg-sidebar rounded-md shadow-md p-2 md:p-4 border border-gray-100 mx-auto flex flex-col h-full  sm:max-w-[900px]">
-        <h3 className="text-2xl font-serif font-bold text-brand-blue mb-4 flex items-center gap-2">
-          New Post
-        </h3>
+        <div className="flex items-center">
+          <h3 className="text-2xl font-serif font-bold text-brand-blue mb-4 flex items-center gap-2">
+            New Post
+          </h3>
+          {state.returned.errorMessage && (
+            <p className="text-red-500">{state.returned.errorMessage}</p>
+          )}
+        </div>
         <span className="py-1 px-4 border border-gray-100 font-semibold text-brand-blue rounded-lg bg-white self-start mb-4">
           Draft
         </span>

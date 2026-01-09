@@ -69,7 +69,7 @@ export const postFormValidator = async (
   if (Object.keys(errors).length > 0) {
     return {
       errors,
-      success: true,
+      success: false,
       returned: { postId: null, errorMessage: null },
     };
   }
@@ -86,7 +86,7 @@ export const postFormValidator = async (
   if (errorMessage) {
     return {
       errors: {},
-      success: true,
+      success: false,
       returned: { postId: null, errorMessage },
     };
   }

@@ -1,6 +1,6 @@
 export const handleError = (error: any) => {
   if (error instanceof Error) {
-    return error.message;
+    return { postId: null, errorMessage: error.message };
   }
-  return error as string;
+  return { postId: null, errorMessage: error as string };
 };
