@@ -5,9 +5,15 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "mhvnss9dtliybovr.public.blob.vercel-storage.com",
+        hostname: "*.public.blob.vercel-storage.com",
       },
     ],
+  },
+
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "5mb",
+    },
   },
 };
 
