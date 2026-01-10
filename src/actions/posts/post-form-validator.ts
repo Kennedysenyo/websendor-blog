@@ -74,15 +74,6 @@ export const postFormValidator = async (
     };
   }
 
-  console.table({
-    title,
-    slug,
-    content,
-    excerpt,
-    featuredImage,
-    categoryId: category,
-  });
-
   const { postId, errorMessage } = await savePost({
     title,
     slug,
