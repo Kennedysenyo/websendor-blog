@@ -1,5 +1,5 @@
 import { fetchCategories } from "@/actions/db/queries";
-import { NewPostBreadCrumb } from "@/components/posts/new-post/post-breadcrumb";
+import { NewPostBreadCrumb } from "@/components/breadcrumb";
 import { NewPostForm } from "@/components/posts/new-post/post-form";
 import { requireSession } from "@/lib/better-auth/server-auth";
 import { redirect } from "next/navigation";

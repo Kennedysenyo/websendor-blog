@@ -7,7 +7,7 @@ interface Props {
 }
 export const Post = ({ post }: Props) => {
   return (
-    <article className="min-h-screen bg-white">
+    <article className="min-h-screen bg-white ">
       {/* Header Navigation */}
       {/* <div className="border-b border-gray-100">
         <div className="container-custom section-padding py-4">

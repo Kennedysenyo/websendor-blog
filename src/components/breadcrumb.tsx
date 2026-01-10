@@ -1,48 +1,33 @@
-"use client";
+import { BreadCrumb, BreadCrumbType } from "./crumb";
 
-import { usePathname } from "next/navigation";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbSeparator,
-} from "./ui/breadcrumb";
-import { cn } from "@/lib/utils";
-
-export interface BreadCrumbType {
-  id: number;
-  name: string;
-  url: string;
-}
-
-interface BreadCrumbProps {
-  urlList: BreadCrumbType[];
-}
-
-export const BreadCrumb = ({ urlList }: BreadCrumbProps) => {
-  const pathname = usePathname();
+const urlList: BreadCrumbType[] = [
+  {
+    id: 1,
+    name: "Dashboard",
+    url: "/",
+  },
+  {
+    id: 2,
+    name: "Posts",
+    url: "/posts",
+  },
+  {
+    id: 3,
+    name: "New Post",
+    url: "/posts/new",
+  },
+];
+export const NewPostBreadCrumb = () => {
   return (
-    <Breadcrumb className="px-4 ">
-      <BreadcrumbList>
-        {urlList.map((link, index) => (
-          <div key={link.id} className="flex items-center gap-1">
-            <BreadcrumbItem>
-              <BreadcrumbLink
-                className={cn(
-                  "hover:underline",
-                  pathname === link.url &&
-                    "text-brand-blue font-semibold underline"
-                )}
-                href={link.url}
-              >
-                {link.name}
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            {index === urlList.length - 1 ? null : <BreadcrumbSeparator />}
-          </div>
-        ))}
-      </BreadcrumbList>
-    </Breadcrumb>
+    <>
+      <div className="p-4  flex flex-col">
+        <BreadCrumb urlList={urlList} />
+        <h1 className="px-4 text-3xl font-bold text-center">Create New Post</h1>
+        <p className="px-8 text-center">
+          Fill the form below and submit to preview draft
+        </p>
+      </div>
+      <hr />
+    </>
   );
 };

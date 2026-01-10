@@ -7,7 +7,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <AppSidebar />
 
       <div className=" relative w-full h-screen flex flex-col overflow-hidden">
-        <SidebarTrigger className="absolute top-1" />
+        <SidebarTrigger className="absolute top-1 z-10" />
         <div className="bg-white  py-2 flex-1 overflow-hidden ">{children}</div>
       </div>
     </SidebarProvider>

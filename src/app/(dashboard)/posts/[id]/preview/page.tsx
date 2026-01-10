@@ -1,7 +1,7 @@
 import { fetchPostById } from "@/actions/db/queries";
 import { MainPreview } from "@/components/posts/preview-post/main";
 import { requireSession } from "@/lib/better-auth/server-auth";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 export default async function PostPreviewPage({
   params,
@@ -15,10 +15,13 @@ export default async function PostPreviewPage({
   }
 
   const postId = (await params).id;
+  if (!postId) {
+    notFound();
+  }
   const post = await fetchPostById(postId);
 
   return (
-    <div className="h-full flex flex-col overflow-y-auto">
+    <div className="h-full flex flex-col overflow-y-auto bg-green-100  ">
       <MainPreview post={post} />
     </div>
   );
