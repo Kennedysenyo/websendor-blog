@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { SidebarGroup, SidebarMenuItem } from "./ui/sidebar";
 import {
+  FilePlus,
   FileText,
   LayoutDashboard,
-  LayoutGrid,
-  ListPlus,
+  List,
   LucideProps,
   Settings,
   Users2,
@@ -44,12 +44,17 @@ const sidebarContent: SidebarNavType[] = [
     subRoutes: [
       {
         name: "All Posts",
-        icon: LayoutGrid,
+        icon: FileText,
         url: "/posts",
       },
       {
+        name: "Add Post",
+        icon: FilePlus,
+        url: "/posts/new",
+      },
+      {
         name: "Categories",
-        icon: ListPlus,
+        icon: List,
         url: "/posts/categories",
       },
     ],
@@ -86,8 +91,7 @@ export const SidebarMenu = () => {
                 }}
                 className={cn(
                   "w-full bg-white flex gap-2 shadow-md items-center justify-content px-2 py-4 hover:bg-brand-blue/90 hover:text-white transition-all duration-300 rounded-md",
-                  ["/posts", "/posts/categories"].includes(pathname) &&
-                    "bg-brand-blue text-white"
+                  pathname.startsWith("/posts") && "bg-brand-blue text-white"
                 )}
               >
                 <sidebar.icon className=" w-6 h-6" />

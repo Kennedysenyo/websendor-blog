@@ -173,7 +173,7 @@ export const NewPostForm = ({ categories }: Props) => {
           action={formAction}
           className="flex-1 flex flex-col overflow-hidden "
         >
-          <div className="  flex-1  mb-4  overflow-y-auto border border-gray-200">
+          <div className="flex-1 mb-4 overflow-y-auto border border-gray-200">
             <div className="space-y-6 p-2 md:p-4 bg-white">
               <div>
                 <label
@@ -186,7 +186,7 @@ export const NewPostForm = ({ categories }: Props) => {
                   id="title"
                   type="text"
                   name="title"
-                  className="bg-sidebar w-full px-4 py-3 rounded-sm border border-gray-200 focus:border-brand-green focus:ring-4 focus:ring-brand-green/5 outline-none transition-all"
+                  className="bg-white w-full px-4 py-3 rounded-sm border border-gray-200 focus:border-brand-green focus:ring-4 focus:ring-brand-green/5 outline-none transition-all"
                   value={formData.title}
                   onChange={handleFormFieldChange}
                 />
@@ -208,7 +208,7 @@ export const NewPostForm = ({ categories }: Props) => {
                   id="slug"
                   type="text"
                   name="slug"
-                  className="bg-sidebar w-full px-4 py-3 rounded-sm border border-gray-200 focus:border-brand-green focus:ring-4 focus:ring-brand-green/5 outline-none transition-all"
+                  className="bg-white w-full px-4 py-3 rounded-sm border border-gray-200 focus:border-brand-green focus:ring-4 focus:ring-brand-green/5 outline-none transition-all"
                   value={formData.slug}
                   onChange={handleFormFieldChange}
                 />
@@ -255,7 +255,7 @@ export const NewPostForm = ({ categories }: Props) => {
                   name="excerpt"
                   rows={4}
                   placeholder="e.g., There are ..."
-                  className="bg-sidebar w-full px-4 py-3 rounded-sm border border-gray-200 focus:border-brand-green focus:ring-4 focus:ring-brand-green/5 outline-none transition-all resize-none"
+                  className="bg-white w-full px-4 py-3 rounded-sm border border-gray-200 focus:border-brand-green focus:ring-4 focus:ring-brand-green/5 outline-none transition-all resize-none"
                   value={formData.excerpt}
                   onChange={handleFormFieldChange}
                 />
