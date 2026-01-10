@@ -1,6 +1,5 @@
 "use server";
 
-import { PostType } from "@/types/types";
 import { sql } from "../../../db/db";
 
 export const fetchCategories = async () => {
@@ -33,4 +32,12 @@ export const fetchPostById = async (id: string) => {
 `;
 
   return post[0];
+};
+
+export const fetPostStatus = async (id: string) => {
+  const res = await sql`
+    SELECT id, status FROM posts WHERE posts.id = ${id}
+  `;
+
+  return res[0];
 };

@@ -2,6 +2,7 @@ import { BreadCrumb, BreadCrumbType } from "@/components/breadcrumb";
 import { ArrowLeft, Calendar, User } from "lucide-react";
 import Link from "next/link";
 import postgres from "postgres";
+import { PostStatus } from "./post-status";
 
 interface Props {
   post: postgres.Row;
@@ -44,17 +45,18 @@ export const Post = ({ post }: Props) => {
       {/* Hero Section */}
       <div className="relative bg-gradient-to-b from-brand-blue/5 to-white section-padding">
         <div className="container-custom max-w-3xl">
-          <BreadCrumb urlList={urlList} />
+          <div className="flex items-center justify-between">
+            <BreadCrumb urlList={urlList} />
+            <PostStatus postStatus={post.status} />
+          </div>
           <div className="mb-6 mt-2">
             <span className="inline-block bg-brand-green text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
               {post.category}
             </span>
           </div>
-
           <h1 className="text-4xl md:text-5xl font-serif font-bold text-brand-blue mb-6 leading-tight">
             {post.title}
           </h1>
-
           <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8 text-muted-foreground">
             <div className="flex items-center gap-2">
               <Calendar className="h-4 w-4" />
