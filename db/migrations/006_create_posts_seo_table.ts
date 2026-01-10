@@ -26,11 +26,6 @@ export const up = async () => {
       
     "keywords" TEXT[],
 
-    CHECK ("metaTitle" IS NULL OR length("metaTitle") BETWEEN 30 AND 60),
-    CHECK ("metaDescription" IS NULL OR length("metaDescription") BETWEEN 120 AND 160),
-    CHECK ("ogTitle" IS NULL OR length("ogTitle") <= 95),
-    CHECK ("twitterTitle" IS NULL OR length("twitterTitle") <= 70),
-
     CHECK (
       "robots" IN (
         'index, follow',

@@ -13,6 +13,14 @@ interface DataType {
   featuredImage: string;
   categoryId: string;
 }
+
+const baseUrl = process.env.BASE_URL;
+if (!baseUrl) {
+  throw new Error(
+    "BASE_URL environment variable is required to save new post!"
+  );
+}
+
 export const savePost = async (data: DataType): Promise<ReturnedData> => {
   try {
     // console.table(data);
@@ -33,30 +41,65 @@ export const savePost = async (data: DataType): Promise<ReturnedData> => {
       throw new Error("Missing required post fields");
     }
 
-    const insertedPost = await sql`
-    INSERT INTO "posts" (
-    "title", 
-    "slug", 
-    "contentMd", 
-    "excerpt",
-    "featuredImage", 
-    "categoryId", 
-    "authorId",
-    "status"
-    )
-    VALUES (
-    ${data.title}, 
-    ${data.slug}, 
-    ${data.content}, 
-    ${data.excerpt}, 
-    ${data.featuredImage}, 
-    ${data.categoryId}, 
-    ${authorId}, 
-    'draft'
-    ) RETURNING id;
+    const canonicalUrl = `${baseUrl}/insights/${data.slug}`;
+
+    const result = await sql.begin(async (tx) => {
+      const [post] = await tx`
+        INSERT INTO "posts" (
+        "title", 
+        "slug", 
+        "contentMd", 
+        "excerpt",
+        "featuredImage", 
+        "categoryId", 
+        "authorId",
+        "status"
+        )
+        VALUES (
+        ${data.title}, 
+        ${data.slug}, 
+        ${data.content}, 
+        ${data.excerpt}, 
+        ${data.featuredImage}, 
+        ${data.categoryId}, 
+        ${authorId}, 
+        'draft'
+      ) RETURNING id;
     `;
 
-    return { postId: insertedPost[0].id, errorMessage: null };
+      await tx`
+      INSERT INTO post_seo (
+        "postId",
+        "metaTitle",
+        "metaDescription",
+        "ogTitle",
+        "ogDescription",
+        "ogImage",
+        "twitterTitle",
+        "twitterDescription",
+        "twitterImage",
+        "canonicalUrl",
+        "robots"
+      )
+      VALUES (
+        ${post.id},
+        ${data.title},
+        ${data.excerpt},
+        ${data.title},
+        ${data.excerpt},
+        ${data.featuredImage},
+        ${data.title},
+        ${data.excerpt},
+        ${data.featuredImage},
+        ${canonicalUrl},
+        'noindex, nofollow'
+      );
+
+    `;
+      return post.id;
+    });
+
+    return { postId: result, errorMessage: null };
   } catch (error) {
     return handleError(error);
   }

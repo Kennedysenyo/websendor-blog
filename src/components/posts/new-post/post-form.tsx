@@ -13,6 +13,7 @@ import { slugify } from "@/utils/slugify";
 import postgres from "postgres";
 import { capitalizeText } from "@/utils/capitalize-text";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 interface FormFields {
   title: string;
@@ -162,7 +163,9 @@ export const NewPostForm = ({ categories }: Props) => {
             New Post
           </h3>
           {state.returned.errorMessage && (
-            <p className="text-red-500">{state.returned.errorMessage}</p>
+            <p className="text-red-500 text-center">
+              {state.returned.errorMessage}
+            </p>
           )}
         </div>
         <span className="py-1 px-4 border border-gray-100 font-semibold text-brand-blue rounded-lg bg-white self-start mb-4">
@@ -186,6 +189,7 @@ export const NewPostForm = ({ categories }: Props) => {
                   id="title"
                   type="text"
                   name="title"
+                  autoComplete="off"
                   className="bg-white w-full px-4 py-3 rounded-sm border border-gray-200 focus:border-brand-green focus:ring-4 focus:ring-brand-green/5 outline-none transition-all"
                   value={formData.title}
                   onChange={handleFormFieldChange}
@@ -208,6 +212,7 @@ export const NewPostForm = ({ categories }: Props) => {
                   id="slug"
                   type="text"
                   name="slug"
+                  autoComplete="off"
                   className="bg-white w-full px-4 py-3 rounded-sm border border-gray-200 focus:border-brand-green focus:ring-4 focus:ring-brand-green/5 outline-none transition-all"
                   value={formData.slug}
                   onChange={handleFormFieldChange}
@@ -254,17 +259,32 @@ export const NewPostForm = ({ categories }: Props) => {
                   id="excerpt"
                   name="excerpt"
                   rows={4}
+                  autoComplete="off"
                   placeholder="e.g., There are ..."
                   className="bg-white w-full px-4 py-3 rounded-sm border border-gray-200 focus:border-brand-green focus:ring-4 focus:ring-brand-green/5 outline-none transition-all resize-none"
                   value={formData.excerpt}
                   onChange={handleFormFieldChange}
                 />
 
-                {state.errors.excerpt && (
-                  <small className="text-xs text-red-500">
-                    {state.errors.excerpt}
-                  </small>
-                )}
+                <div className="flex items-center space-between">
+                  {state.errors.excerpt && (
+                    <small className="text-xs text-red-500">
+                      {state.errors.excerpt}
+                    </small>
+                  )}
+                  <p className="ml-auto ">
+                    <span
+                      className={cn(
+                        "text-green-500",
+                        formData.excerpt.length > 160 && "text-red-500",
+                        formData.excerpt.length < 120 && "text-yellow-500"
+                      )}
+                    >
+                      {formData.excerpt.length}
+                    </span>
+                    /160
+                  </p>
+                </div>
               </div>
 
               <div>

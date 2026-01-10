@@ -54,6 +54,8 @@ export const postFormValidator = async (
   // excerpt
   if (!excerpt) {
     errors.excerpt = "Enter excerpt!";
+  } else if (excerpt.length < 120 || excerpt.length > 160) {
+    errors.excerpt = "Excerpt should be between 120 and 160 characters long.";
   }
 
   // category
