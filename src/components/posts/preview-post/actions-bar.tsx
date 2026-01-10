@@ -3,15 +3,18 @@
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
-import { ChartLine, CloudUpload, FilePen } from "lucide-react";
+import { ChartLine, CloudUpload, EyeOff, FilePen } from "lucide-react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
-
-export const ActionsBar = () => {
+// import { useParams } from "next/navigation";
+interface Props {
+  postStatus: string;
+  postId: string;
+}
+export const ActionsBar = ({ postStatus, postId }: Props) => {
   const isMobile = useIsMobile();
 
-  const params = useParams();
-  const postId = params.id;
+  // const params = useParams();
+  // const postId = params.id;
 
   return (
     <div
@@ -38,17 +41,44 @@ export const ActionsBar = () => {
           >
             <Link href={`/posts/${postId}/seo`}>
               <ChartLine className="size-4" />
-              <span className="hidden md:block text-sm ml-1">Add SEO</span>
+              <span className="hidden md:block text-sm ml-1">Edit SEO</span>
             </Link>
           </Button>
 
-          <Button
-            onClick={() => {}}
-            className="flex items-center bg-brand-green text-white rounded-md py-1 px-2 hover:bg-brand-green/90 cursor-pointer"
-          >
-            <CloudUpload className="size-4" />
-            <span className="hidden md:block text-sm ml-1">Publish</span>
-          </Button>
+          {postStatus === "draft" ? (
+            <>
+              <Button
+                onClick={() => {}}
+                className="flex items-center bg-brand-green text-white rounded-md py-1 px-2 hover:bg-brand-green/90 cursor-pointer"
+              >
+                <CloudUpload className="size-4" />
+                <span className="hidden md:block text-sm ml-1">Publish</span>
+              </Button>
+              <Button
+                onClick={() => {}}
+                className="flex items-center bg-black text-white rounded-md py-1 px-2 hover:bg-black/80 cursor-pointer"
+              >
+                <EyeOff className="size-4" />
+                <span className="hidden md:block text-sm ml-1">Archive</span>
+              </Button>
+            </>
+          ) : postStatus === "published" ? (
+            <Button
+              onClick={() => {}}
+              className="flex items-center bg-black text-white rounded-md py-1 px-2 hover:bg-black/80 cursor-pointer"
+            >
+              <EyeOff className="size-4" />
+              <span className="hidden md:block text-sm ml-1">Archive</span>
+            </Button>
+          ) : (
+            <Button
+              onClick={() => {}}
+              className="flex items-center bg-brand-green text-white rounded-md py-1 px-2 hover:bg-brand-green/90 cursor-pointer"
+            >
+              <CloudUpload className="size-4" />
+              <span className="hidden md:block text-sm ml-1">Publish</span>
+            </Button>
+          )}
         </div>
       </div>
     </div>

@@ -55,6 +55,7 @@ export const savePost = async (data: DataType): Promise<ReturnedData> => {
     'draft'
     ) RETURNING id;
     `;
+
     return { postId: insertedPost[0].id, errorMessage: null };
   } catch (error) {
     return handleError(error);
