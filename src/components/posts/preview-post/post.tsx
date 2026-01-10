@@ -1,3 +1,4 @@
+import { BreadCrumb, BreadCrumbType } from "@/components/breadcrumb";
 import { ArrowLeft, Calendar, User } from "lucide-react";
 import Link from "next/link";
 import postgres from "postgres";
@@ -5,7 +6,26 @@ import postgres from "postgres";
 interface Props {
   post: postgres.Row;
 }
+
 export const Post = ({ post }: Props) => {
+  const urlList: BreadCrumbType[] = [
+    {
+      id: 1,
+      name: "Dashboard",
+      url: "/",
+    },
+    {
+      id: 2,
+      name: "Posts",
+      url: "/posts",
+    },
+    {
+      id: 3,
+      name: "Post Preview",
+      url: `/posts/${post.id}/preview`,
+    },
+  ];
+
   return (
     <article className="min-h-screen bg-white ">
       {/* Header Navigation */}
@@ -24,7 +44,8 @@ export const Post = ({ post }: Props) => {
       {/* Hero Section */}
       <div className="relative bg-gradient-to-b from-brand-blue/5 to-white section-padding">
         <div className="container-custom max-w-3xl">
-          <div className="mb-6">
+          <BreadCrumb urlList={urlList} />
+          <div className="mb-6 mt-2">
             <span className="inline-block bg-brand-green text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
               {post.category}
             </span>

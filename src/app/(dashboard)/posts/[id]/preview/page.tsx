@@ -21,7 +21,7 @@ export default async function PostPreviewPage({
   const post = await fetchPostById(postId);
 
   return (
-    <div className="h-full flex flex-col overflow-y-auto bg-green-100  ">
+    <div className="h-full flex flex-col overflow-y-auto">
       <MainPreview post={post} />
     </div>
   );
