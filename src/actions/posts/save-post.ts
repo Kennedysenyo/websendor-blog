@@ -15,7 +15,7 @@ interface DataType {
 }
 export const savePost = async (data: DataType): Promise<ReturnedData> => {
   try {
-    console.table(data);
+    // console.table(data);
 
     const session = await requireSession();
     const authorId = session?.user.id;

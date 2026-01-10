@@ -1,4 +1,4 @@
-import { BreadCrumb, BreadCrumbType } from "../breadcrumb";
+import { BreadCrumb, BreadCrumbType } from "../../breadcrumb";
 
 const urlList: BreadCrumbType[] = [
   {

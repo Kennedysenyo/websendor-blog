@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { ChangeEvent } from "react";
-import { Spinner } from "../ui/spinner";
+import { Spinner } from "../../ui/spinner";
 
 interface Props {
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;

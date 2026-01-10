@@ -1,7 +1,7 @@
 "use client";
 import { Save } from "lucide-react";
-import { Button } from "../ui/button";
-import { Spinner } from "../ui/spinner";
+import { Button } from "../../ui/button";
+import { Spinner } from "../../ui/spinner";
 import { ChangeEvent, useActionState, useEffect, useState } from "react";
 import { MarkdownEditor } from "./markdown-editor";
 import { ImageUploader } from "./image-uploader";
