@@ -14,7 +14,8 @@ export const PostStatus = ({ postStatus }: Props) => {
         className={cn(
           "py-1 px-2 border border-gray-100 text-sm  rounded-lg  self-start",
           postStatus === "draft" && "bg-brand-gold text-brand-blue",
-          postStatus === "publised" && "bg-brand-green text-white"
+          postStatus === "publised" && "bg-brand-green text-white",
+          postStatus === "archived" && "bg-black text-white"
         )}
       >
         {postStatus}

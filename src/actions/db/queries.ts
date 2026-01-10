@@ -1,5 +1,6 @@
 "use server";
 
+import { handleError } from "@/utils/handle-error";
 import { sql } from "../../../db/db";
 
 export const fetchCategories = async () => {
@@ -41,3 +42,87 @@ export const fetPostStatus = async (id: string) => {
 
   return res[0];
 };
+
+export const setPostStatusToPublish = async (
+  id: string
+): Promise<string | null> => {
+  try {
+    await sql.begin(async (tx) => {
+      await tx`
+        UPDATE posts
+        SET "status" = 'published'
+        WHERE id = ${id};
+      `;
+
+      await tx`
+        UPDATE post_seo
+        SET "robots" = 'noindex, nofollow'
+        WHERE postId = ${id};
+      `;
+    });
+    return null;
+  } catch (error) {
+    if (error instanceof Error) {
+      return error.message;
+    }
+    return error as string;
+  }
+};
+
+export const setPostStatusToArchive = async (
+  id: string
+): Promise<string | null> => {
+  try {
+    await sql.begin(async (tx) => {
+      await tx`
+        UPDATE posts
+        SET "status" = 'archived'
+        WHERE id = ${id};
+      `;
+
+      await tx`
+        UPDATE post_seo
+        SET "robots" = 'noindex, nofollow'
+        WHERE postId = ${id};
+      `;
+    });
+    return null;
+  } catch (error) {
+    if (error instanceof Error) {
+      return error.message;
+    }
+    return error as string;
+  }
+};
+export const setPostStatusToDraft = async (
+  id: string
+): Promise<string | null> => {
+  try {
+    await sql.begin(async (tx) => {
+      await tx`
+        UPDATE posts
+        SET "status" = 'draft'
+        WHERE id = ${id};
+      `;
+
+      await tx`
+        UPDATE post_seo
+        SET "robots" = 'noindex, nofollow'
+        WHERE postId = ${id};
+      `;
+    });
+
+    return null;
+  } catch (error) {
+    if (error instanceof Error) {
+      return error.message;
+    }
+    return error as string;
+  }
+};
+
+// | Post Status | robots              |
+// | ----------- | ------------------- |
+// | `draft`     | `noindex, nofollow` |
+// | `published` | `index, follow`     |
+// | `archived`  | `noindex, follow`   |
