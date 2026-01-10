@@ -52,7 +52,7 @@ export const Post = ({ post }: Props) => {
         <div className="container-custom max-w-3xl mt-0">
           <div className="relative aspect-video rounded-xl overflow-hidden">
             <img
-              src={post.featuredImage || "/placeholder.svg"}
+              src={post.featuredImage}
               alt={post.title}
               className="w-full h-full object-cover"
             />

@@ -14,7 +14,7 @@ export default async function Home() {
   }
 
   return (
-    <div className=" min-h-full p-4">
+    <div className="h-full flex flex-col overflow-y-auto p-4">
       <HomeHeader name={user?.name!} />
       <hr />
       <CardGrid />
