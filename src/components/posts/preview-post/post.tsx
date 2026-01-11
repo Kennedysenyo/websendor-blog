@@ -3,6 +3,7 @@ import { Calendar, User } from "lucide-react";
 import Link from "next/link";
 import postgres from "postgres";
 import { PostStatus } from "./post-status";
+import { MarkdownRenderer } from "./markdown-renderer";
 
 interface Props {
   post: postgres.Row;
@@ -83,43 +84,9 @@ export const Post = ({ post }: Props) => {
         </div>
       )}
 
-      {/* Content */}
       <div className="section-padding">
         <div className="container-custom max-w-3xl prose prose-lg dark:prose-invert mx-auto">
-          {post.contentMd
-            .split("\r\n\r\n")
-            .map((paragraph: string, index: number) => {
-              if (paragraph.startsWith("##")) {
-                return (
-                  <h2
-                    key={index}
-                    className="text-3xl font-serif font-bold text-brand-blue mt-8 mb-4"
-                  >
-                    {paragraph.replace("## ", "")}
-                  </h2>
-                );
-              }
-
-              if (paragraph.startsWith("**")) {
-                // Handle bold text at the start of paragraphs
-                const parts = paragraph.split("\n");
-                return (
-                  <div key={index} className="mb-6">
-                    {parts.map((part, i) => (
-                      <p key={i} className="text-gray-700 leading-relaxed mb-2">
-                        {part.replace(/\*\*/g, "")}
-                      </p>
-                    ))}
-                  </div>
-                );
-              }
-
-              return (
-                <p key={index} className="text-gray-700 leading-relaxed mb-6">
-                  {paragraph}
-                </p>
-              );
-            })}
+          <MarkdownRenderer content={post.contentMd} />
         </div>
       </div>
 
@@ -136,7 +103,7 @@ export const Post = ({ post }: Props) => {
               </p>
             </div>
             <Link
-              href="/insights"
+              href="/posts"
               className="inline-flex items-center justify-center h-12 px-8 bg-brand-green text-white font-bold rounded-lg hover:bg-brand-green/90 transition-colors"
             >
               More Articles
