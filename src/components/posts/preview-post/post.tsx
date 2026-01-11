@@ -3,7 +3,7 @@ import { Calendar, User } from "lucide-react";
 import Link from "next/link";
 import postgres from "postgres";
 import { PostStatus } from "./post-status";
-import { MarkdownRenderer } from "./markdown-renderer";
+import { MarkdownRenderer } from "@/components/markdown/MarkdownRenderer";
 
 interface Props {
   post: postgres.Row;
@@ -27,6 +27,14 @@ export const Post = ({ post }: Props) => {
       url: `/posts/${post.id}/preview`,
     },
   ];
+
+  const mediaConfig = {
+    enableLazyLoading: true,
+    sandboxIframes: true,
+    allowFullScreen: false,
+    showCaptions: true,
+    autoPlay: false,
+  };
 
   return (
     <article className="min-h-screen bg-white ">
@@ -88,9 +96,14 @@ export const Post = ({ post }: Props) => {
         </div>
       )}
 
+      {/* Content */}
       <div className="section-padding">
         <div className="container-custom max-w-3xl prose prose-lg dark:prose-invert mx-auto">
-          <MarkdownRenderer content={post.contentMd} />
+          <MarkdownRenderer
+            content={post.contentMd}
+            mediaConfig={mediaConfig}
+            className="prose prose-lg dark:prose-invert max-w-none"
+          />
         </div>
       </div>
 

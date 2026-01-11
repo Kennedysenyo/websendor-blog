@@ -189,3 +189,102 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer base {
+  /* Core prose container */
+  .prose {
+    @apply max-w-none text-foreground leading-relaxed;
+  }
+
+  /* Paragraphs */
+  .prose p {
+    @apply text-muted-foreground leading-relaxed mb-6;
+  }
+
+  /* Headings */
+  .prose h1 {
+    @apply font-serif text-4xl font-bold tracking-tight text-brand-blue mb-6;
+  }
+
+  .prose h2 {
+    @apply font-serif text-3xl font-bold tracking-tight text-brand-blue mt-12 mb-4;
+  }
+
+  .prose h3 {
+    @apply font-serif text-2xl font-semibold tracking-tight text-brand-blue mt-10 mb-3;
+  }
+
+  .prose h4 {
+    @apply font-serif text-xl font-semibold text-brand-blue mt-8 mb-2;
+  }
+
+  /* Links */
+  .prose a {
+    @apply text-brand-green font-semibold no-underline hover:underline;
+  }
+
+  /* Bold & emphasis */
+  .prose strong {
+    @apply text-foreground font-bold;
+  }
+
+  .prose em {
+    @apply italic;
+  }
+
+  /* Inline code */
+  .prose code {
+    @apply bg-muted text-brand-blue px-2 py-1 rounded text-sm font-mono;
+  }
+
+  /* Code blocks */
+  .prose pre {
+    @apply bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto my-8 text-sm;
+  }
+
+  .prose pre code {
+    @apply bg-transparent text-inherit p-0;
+  }
+
+  /* Lists */
+  .prose ul {
+    @apply list-disc pl-6 mb-6 text-muted-foreground space-y-2;
+  }
+
+  .prose ol {
+    @apply list-decimal pl-6 mb-6 text-muted-foreground space-y-2;
+  }
+
+  /* Blockquotes */
+  .prose blockquote {
+    @apply border-l-4 border-brand-green pl-4 italic text-muted-foreground my-8;
+  }
+
+  /* Horizontal rules */
+  .prose hr {
+    @apply my-12 border-t border-border;
+  }
+
+  /* Images */
+  .prose img {
+    @apply my-8 rounded-xl;
+  }
+
+  /* Tables */
+  .prose table {
+    @apply w-full border-collapse my-8;
+  }
+
+  .prose th {
+    @apply border-b border-border text-left py-2 font-semibold;
+  }
+
+  .prose td {
+    @apply border-b border-border py-2;
+  }
+
+  /* Prevent prose from touching UI blocks */
+  .not-prose {
+    all: unset;
+  }
+}
