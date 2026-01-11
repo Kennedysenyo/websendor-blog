@@ -65,7 +65,8 @@ export const setPostStatusToPublish = async (
     return null;
   } catch (error) {
     if (error instanceof Error) {
-      return error.message;
+      console.error(error.message);
+      return "Error! Status change unsuccessful";
     }
     return error as string;
   }
@@ -92,7 +93,8 @@ export const setPostStatusToArchive = async (
     return null;
   } catch (error) {
     if (error instanceof Error) {
-      return error.message;
+      console.error(error.message);
+      return "Error! Status change unsuccessful";
     }
     return error as string;
   }
@@ -119,7 +121,8 @@ export const setPostStatusToDraft = async (
     return null;
   } catch (error) {
     if (error instanceof Error) {
-      return error.message;
+      console.error(error.message);
+      return "Error! Status change unsuccessful";
     }
     return error as string;
   }
