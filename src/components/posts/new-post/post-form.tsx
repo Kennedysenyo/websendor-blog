@@ -163,7 +163,7 @@ export const NewPostForm = ({ categories }: Props) => {
             New Post
           </h3>
           {state.returned.errorMessage && (
-            <p className="text-red-500 text-center">
+            <p className="text-red-500 mx-auto text-center">
               {state.returned.errorMessage}
             </p>
           )}
