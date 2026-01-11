@@ -10,7 +10,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { ChartLine, CloudUpload, EyeOff, FilePen } from "lucide-react";
 import Link from "next/link";
-import { useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
 
 interface Props {
@@ -21,10 +21,15 @@ export const ActionsBar = ({ postStatus, postId }: Props) => {
   const isMobile = useIsMobile();
 
   const [pending, startTransition] = useTransition();
+  const [showLoading, setShowLoading] = useState({
+    loadA: false,
+    loadB: false,
+  });
 
-  const handleSetPostStatusToPublishClick = (status: string) => {
+  const handleSetPostStatusToPublishClick = () => {
+    setShowLoading({ loadA: true, loadB: false });
     startTransition(async () => {
-      const response = await setPostStatusToPublish(status);
+      const response = await setPostStatusToPublish(postId);
       if (response) {
         toast.error(response);
       } else {
@@ -33,15 +38,22 @@ export const ActionsBar = ({ postStatus, postId }: Props) => {
     });
   };
 
-  const handleSetPostStatusToArchiveClick = (status: string) => {
+  const handleSetPostStatusToArchiveClick = () => {
+    setShowLoading({ loadA: false, loadB: true });
     startTransition(async () => {
-      const response = await setPostStatusToArchive(status);
+      const response = await setPostStatusToArchive(postId);
       if (response) {
+        toast.error(response);
       } else {
+        toast.success("Archived post successfully");
       }
     });
   };
-
+  useEffect(() => {
+    if (!pending) {
+      setShowLoading({ loadA: false, loadB: false });
+    }
+  }, [pending]);
   return (
     <div
       className={cn(
@@ -74,10 +86,11 @@ export const ActionsBar = ({ postStatus, postId }: Props) => {
           {postStatus === "draft" ? (
             <>
               <Button
-                onClick={() => handleSetPostStatusToPublishClick("published")}
+                disabled={pending}
+                onClick={handleSetPostStatusToPublishClick}
                 className="flex items-center bg-brand-green text-white rounded-md py-1 px-2 hover:bg-brand-green/90 cursor-pointer"
               >
-                {pending ? (
+                {pending && showLoading.loadA ? (
                   <Spinner />
                 ) : (
                   <>
@@ -89,10 +102,11 @@ export const ActionsBar = ({ postStatus, postId }: Props) => {
                 )}
               </Button>
               <Button
-                onClick={() => handleSetPostStatusToArchiveClick("archived")}
+                onClick={handleSetPostStatusToArchiveClick}
+                disabled={pending}
                 className="flex items-center bg-black text-white rounded-md py-1 px-2 hover:bg-black/80 cursor-pointer"
               >
-                {pending ? (
+                {pending && showLoading.loadB ? (
                   <Spinner />
                 ) : (
                   <>
@@ -106,10 +120,11 @@ export const ActionsBar = ({ postStatus, postId }: Props) => {
             </>
           ) : postStatus === "published" ? (
             <Button
-              onClick={() => handleSetPostStatusToArchiveClick("archived")}
+              onClick={handleSetPostStatusToArchiveClick}
+              disabled={pending}
               className="flex items-center bg-black text-white rounded-md py-1 px-2 hover:bg-black/80 cursor-pointer"
             >
-              {pending ? (
+              {pending && showLoading.loadB ? (
                 <Spinner />
               ) : (
                 <>
@@ -120,10 +135,11 @@ export const ActionsBar = ({ postStatus, postId }: Props) => {
             </Button>
           ) : (
             <Button
-              onClick={() => handleSetPostStatusToPublishClick("published")}
+              onClick={handleSetPostStatusToPublishClick}
+              disabled={pending}
               className="flex items-center bg-brand-green text-white rounded-md py-1 px-2 hover:bg-brand-green/90 cursor-pointer"
             >
-              {pending ? (
+              {pending && showLoading.loadA ? (
                 <Spinner />
               ) : (
                 <>

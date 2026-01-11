@@ -1,7 +1,7 @@
 "use server";
 
-import { handleError } from "@/utils/handle-error";
 import { sql } from "../../../db/db";
+import { revalidatePath } from "next/cache";
 
 export const fetchCategories = async () => {
   const categories = await sql`
@@ -50,16 +50,18 @@ export const setPostStatusToPublish = async (
     await sql.begin(async (tx) => {
       await tx`
         UPDATE posts
-        SET "status" = 'published'
+        SET "status" = 'published',
+        "publishedAt" = now()
         WHERE id = ${id};
       `;
 
       await tx`
         UPDATE post_seo
-        SET "robots" = 'noindex, nofollow'
-        WHERE postId = ${id};
+        SET "robots" = 'index, follow'
+        WHERE "postId" = ${id};
       `;
     });
+    revalidatePath(`posts/${id}/preview`);
     return null;
   } catch (error) {
     if (error instanceof Error) {
@@ -82,10 +84,11 @@ export const setPostStatusToArchive = async (
 
       await tx`
         UPDATE post_seo
-        SET "robots" = 'noindex, nofollow'
-        WHERE postId = ${id};
+        SET "robots" = 'noindex, follow'
+        WHERE "postId" = ${id};
       `;
     });
+    revalidatePath(`posts/${id}/preview`);
     return null;
   } catch (error) {
     if (error instanceof Error) {
@@ -108,9 +111,10 @@ export const setPostStatusToDraft = async (
       await tx`
         UPDATE post_seo
         SET "robots" = 'noindex, nofollow'
-        WHERE postId = ${id};
+        WHERE "postId" = ${id};
       `;
     });
+    revalidatePath(`posts/${id}/preview`);
 
     return null;
   } catch (error) {

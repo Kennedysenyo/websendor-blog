@@ -1,5 +1,5 @@
 import { BreadCrumb, BreadCrumbType } from "@/components/breadcrumb";
-import { ArrowLeft, Calendar, User } from "lucide-react";
+import { Calendar, User } from "lucide-react";
 import Link from "next/link";
 import postgres from "postgres";
 import { PostStatus } from "./post-status";
