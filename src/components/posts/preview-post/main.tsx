@@ -8,6 +8,6 @@ interface Props {
 }
 
 export const MainPreview = ({ post }: Props) => {
-  console.log(post);
+  // console.log(post);
   return <Post post={post} />;
 };

@@ -158,16 +158,18 @@ export const NewPostForm = ({ categories }: Props) => {
   return (
     <div className="w-full flex-1 overflow-hidden p-4">
       <div className="bg-sidebar rounded-md shadow-md p-2 md:p-4 border border-gray-100 mx-auto flex flex-col h-full  sm:max-w-[900px]">
-        <div className="flex items-center">
-          <h3 className="text-2xl font-serif font-bold text-brand-blue mb-4 flex items-center gap-2">
+        <div className="relative flex items-center mb-2">
+          <h3 className="text-2xl font-serif font-bold text-brand-blue">
             New Post
           </h3>
+
           {state.returned.errorMessage && (
-            <p className="text-red-500 mx-auto text-center">
+            <p className="absolute left-1/2 -translate-x-1/2 text-red-500">
               {state.returned.errorMessage}
             </p>
           )}
         </div>
+
         <span className="py-1 px-4 border border-gray-100 font-semibold text-brand-blue rounded-lg bg-white self-start mb-4">
           Draft
         </span>
