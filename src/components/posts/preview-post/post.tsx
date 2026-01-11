@@ -61,7 +61,11 @@ export const Post = ({ post }: Props) => {
           <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8 text-muted-foreground">
             <div className="flex items-center gap-2">
               <Calendar className="h-4 w-4" />
-              <time dateTime={post.publisedAt}>{post.publisedAt}</time>
+              {post.publishedAt && (
+                <time dateTime={post.publishedAt.toISOString()}>
+                  {post.publishedAt.toISOString().split("T")[0]}
+                </time>
+              )}
             </div>
             <div className="flex items-center gap-2">
               <User className="h-4 w-4" />
