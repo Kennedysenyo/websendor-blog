@@ -34,10 +34,7 @@ export const SocialEmbed: React.FC<SocialEmbedProps> = ({
         return url;
 
       case "twitter":
-        const tweetId = url.match(/status\/(\d+)/)?.[1];
-        return tweetId
-          ? `https://twitframe.com/show?url=${encodeURIComponent(url)}`
-          : url;
+        return `https://twitframe.com/show?url=${encodeURIComponent(url)}`;
 
       default:
         return url;
