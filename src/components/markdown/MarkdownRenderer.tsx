@@ -190,12 +190,9 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
 
         case "image":
           return (
-            <MarkdownImage
-              src={href}
-              alt={typeof children === "string" ? children : "Image"}
-              config={mediaConfig}
-              className="my-4"
-            />
+            <ExternalLink href={href} config={mediaConfig}>
+              {children}
+            </ExternalLink>
           );
 
         default:

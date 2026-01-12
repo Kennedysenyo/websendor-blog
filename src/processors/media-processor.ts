@@ -1,3 +1,5 @@
+// processors/media-processor.ts
+
 import { MediaType } from "@/types/markdown";
 
 export class MediaProcessor {
