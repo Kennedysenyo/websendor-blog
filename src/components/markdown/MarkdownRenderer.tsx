@@ -15,11 +15,18 @@ import { SocialEmbed } from "./MediaComponents/SocialEmbed";
 import { FileDownload } from "./MediaComponents/FileDownload";
 import { ExternalLink } from "./MediaComponents/ExternalLinks";
 
+import { remarkMediaBlocks } from "@/lib/remark-media-blocks";
+import { rehypeMedia } from "@/lib/rehype-media";
+
 interface MarkdownRendererProps {
   content: string;
   mediaConfig?: MediaConfig;
   className?: string;
 }
+
+type ExtendedComponents = Components & {
+  media?: React.FC<{ node: { url: string } }>;
+};
 
 // -----------------------
 // Helper: Detect block-level elements
@@ -111,9 +118,41 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
   mediaConfig = {},
   className = "prose prose-lg max-w-none",
 }) => {
-  const components: Components = {
-    // Paragraphs
-    p: MarkdownParagraph,
+  const components: ExtendedComponents = {
+    media: ({ node }: any) => {
+      const url = node.properties.url;
+
+      if (!MediaProcessor.isURLAllowed(url)) {
+        return <span className="text-red-500">[Blocked media]</span>;
+      }
+
+      const type = MediaProcessor.detectMediaType(url);
+
+      switch (type) {
+        case "youtube": {
+          const id = MediaProcessor.extractYouTubeId(url);
+          return id ? <YouTubeEmbed videoId={id} config={mediaConfig} /> : null;
+        }
+
+        case "vimeo":
+        case "spotify":
+        case "twitter":
+          return <SocialEmbed url={url} type={type} config={mediaConfig} />;
+
+        case "image":
+          return <MarkdownImage src={url} alt="" config={mediaConfig} />;
+
+        case "file": {
+          const file = MediaProcessor.getFileInfo(url);
+          return (
+            <FileDownload url={url} fileName={file.name} fileType={file.type} />
+          );
+        }
+
+        default:
+          return <ExternalLink href={url}>{url}</ExternalLink>;
+      }
+    },
 
     // Images
     img: ({ src, alt, title, ...props }) => {
@@ -137,85 +176,18 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
     },
 
     // Links (media and external)
-    a: ({ href, children, ...props }) => {
-      if (!href) return <a {...props}>{children}</a>;
-
-      if (!MediaProcessor.isURLAllowed(href)) {
-        return <span className="text-red-500">[Unsafe Link Blocked]</span>;
-      }
-
-      const mediaType = MediaProcessor.detectMediaType(href);
-
-      switch (mediaType) {
-        case "youtube": {
-          const videoId = MediaProcessor.extractYouTubeId(href);
-          if (!videoId) break;
-          return (
-            <YouTubeEmbed
-              videoId={videoId}
-              title={typeof children === "string" ? children : "YouTube Video"}
-              config={mediaConfig}
-              className="my-6"
-            />
-          );
-        }
-
-        case "vimeo":
-        case "spotify":
-        case "twitter":
-          return (
-            <SocialEmbed
-              url={href}
-              type={mediaType}
-              title={
-                typeof children === "string" ? children : `${mediaType} Content`
-              }
-              config={mediaConfig}
-              className="my-6"
-            />
-          );
-
-        case "file": {
-          const fileInfo = MediaProcessor.getFileInfo(href);
-          return (
-            <FileDownload
-              url={href}
-              fileName={fileInfo.name}
-              fileType={fileInfo.type}
-              config={mediaConfig}
-              className="my-4"
-            />
-          );
-        }
-
-        case "image":
-          return (
-            <ExternalLink href={href} config={mediaConfig}>
-              {children}
-            </ExternalLink>
-          );
-
-        default:
-          return (
-            <ExternalLink href={href} config={mediaConfig}>
-              {children}
-            </ExternalLink>
-          );
-      }
-
-      return (
-        <ExternalLink href={href} config={mediaConfig}>
-          {children}
-        </ExternalLink>
-      );
+    a: ({ href, children }) => {
+      if (!href) return <a>{children}</a>;
+      if (!MediaProcessor.isURLAllowed(href)) return <span>[Blocked]</span>;
+      return <ExternalLink href={href}>{children}</ExternalLink>;
     },
   };
 
   return (
     <div className={className}>
       <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
-        rehypePlugins={[rehypeRaw, rehypeSanitize]}
+        remarkPlugins={[remarkGfm, remarkMediaBlocks]}
+        rehypePlugins={[rehypeMedia, rehypeRaw, rehypeSanitize]}
         components={components}
       >
         {content}

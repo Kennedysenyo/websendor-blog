@@ -68,7 +68,7 @@ export class MediaProcessor {
 
   static extractSpotifyInfo(url: string): { type: string; id: string } | null {
     const match = url.match(
-      /spotify\.com\/(track|album|playlist|episode|show)\/([a-zA-Z0-9]+)/
+      /spotify\.com\/(track|album|playlist|episode|show)\/([a-zA-Z0-9]+)(\?|$)/
     );
     if (!match) return null;
     return { type: match[1], id: match[2] };
@@ -154,15 +154,6 @@ export class MediaProcessor {
       return this.isSafeImageURL(url);
     }
 
-    if (
-      type === "youtube" ||
-      type === "vimeo" ||
-      type === "spotify" ||
-      type === "twitter"
-    ) {
-      return this.isSafeEmbedURL(url);
-    }
-
     if (type === "file") {
       try {
         const parsed = new URL(url);
@@ -170,6 +161,23 @@ export class MediaProcessor {
       } catch {
         return false;
       }
+    }
+
+    // embeds: validate the EMBED url, not the source
+    if (type === "youtube") {
+      return true; // embed URL will be constructed safely
+    }
+
+    if (type === "vimeo") {
+      return true;
+    }
+
+    if (type === "spotify") {
+      return true;
+    }
+
+    if (type === "twitter") {
+      return true;
     }
 
     // normal links
