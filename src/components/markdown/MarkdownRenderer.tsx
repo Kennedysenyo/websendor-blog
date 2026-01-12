@@ -1,12 +1,14 @@
 // components/markdown/MarkdownRenderer.tsx
-import React from "react";
+import React, { ReactNode, HTMLAttributes } from "react";
 import ReactMarkdown from "react-markdown";
 import type { Components } from "react-markdown";
 import rehypeSanitize from "rehype-sanitize";
 import rehypeRaw from "rehype-raw";
-import { MediaProcessor } from "@/processors/media-processor";
+import remarkGfm from "remark-gfm";
 
+import { MediaProcessor } from "@/processors/media-processor";
 import { MediaConfig } from "@/types/markdown";
+
 import { MarkdownImage } from "./MediaComponents/MarkdownImage";
 import { YouTubeEmbed } from "./MediaComponents/YoutubeEmbed";
 import { SocialEmbed } from "./MediaComponents/SocialEmbed";
@@ -19,14 +21,102 @@ interface MarkdownRendererProps {
   className?: string;
 }
 
+// -----------------------
+// Helper: Detect block-level elements
+// -----------------------
+function isBlockElement(child: ReactNode): boolean {
+  if (!React.isValidElement(child)) return false;
+
+  // HTML block elements
+  const blockTypes = [
+    "div",
+    "figure",
+    "iframe",
+    "pre",
+    "blockquote",
+    "ul",
+    "ol",
+    "li",
+    "table",
+    "h1",
+    "h2",
+    "h3",
+    "h4",
+    "h5",
+    "h6",
+  ];
+
+  // Custom media components (they render block elements)
+  const customBlockComponents = [
+    YouTubeEmbed,
+    SocialEmbed,
+    FileDownload,
+    MarkdownImage,
+  ];
+
+  if (typeof child.type === "string") return blockTypes.includes(child.type);
+  if (customBlockComponents.includes(child.type as any)) return true;
+
+  return false;
+}
+
+// -----------------------
+// Custom Paragraph component
+// -----------------------
+const MarkdownParagraph: React.FC<HTMLAttributes<HTMLParagraphElement>> = ({
+  children,
+  ...props
+}) => {
+  const childrenArray = React.Children.toArray(children);
+
+  const newChildren: ReactNode[] = [];
+  let inlineGroup: ReactNode[] = [];
+
+  childrenArray.forEach((child, index) => {
+    if (isBlockElement(child)) {
+      if (inlineGroup.length) {
+        newChildren.push(
+          <p key={`p-${newChildren.length}`} {...props}>
+            {inlineGroup}
+          </p>
+        );
+        inlineGroup = [];
+      }
+      if (React.isValidElement(child)) {
+        newChildren.push(React.cloneElement(child, { key: `block-${index}` }));
+      } else {
+        newChildren.push(child);
+      }
+    } else {
+      inlineGroup.push(child);
+    }
+  });
+
+  if (inlineGroup.length) {
+    newChildren.push(
+      <p key={`p-${newChildren.length}`} {...props}>
+        {inlineGroup}
+      </p>
+    );
+  }
+
+  return <>{newChildren}</>;
+};
+
+// -----------------------
+// MarkdownRenderer component
+// -----------------------
 export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
   content,
   mediaConfig = {},
   className = "prose prose-lg max-w-none",
 }) => {
   const components: Components = {
-    // Handle images
-    img: ({ node, src, alt, title, ...props }) => {
+    // Paragraphs
+    p: MarkdownParagraph,
+
+    // Images
+    img: ({ src, alt, title, ...props }) => {
       if (
         !src ||
         typeof src !== "string" ||
@@ -42,13 +132,12 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
           title={title}
           config={mediaConfig}
           className="my-4"
-          // {...props}
         />
       );
     },
 
-    // Handle links (for embeds and downloads)
-    a: ({ node, href, children, ...props }) => {
+    // Links (media and external)
+    a: ({ href, children, ...props }) => {
       if (!href) return <a {...props}>{children}</a>;
 
       if (!MediaProcessor.isURLAllowed(href)) {
@@ -58,7 +147,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
       const mediaType = MediaProcessor.detectMediaType(href);
 
       switch (mediaType) {
-        case "youtube":
+        case "youtube": {
           const videoId = MediaProcessor.extractYouTubeId(href);
           if (!videoId) break;
           return (
@@ -69,6 +158,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
               className="my-6"
             />
           );
+        }
 
         case "vimeo":
         case "spotify":
@@ -85,7 +175,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
             />
           );
 
-        case "file":
+        case "file": {
           const fileInfo = MediaProcessor.getFileInfo(href);
           return (
             <FileDownload
@@ -96,6 +186,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
               className="my-4"
             />
           );
+        }
 
         case "image":
           return (
@@ -121,77 +212,14 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
         </ExternalLink>
       );
     },
-
-    // Handle plain text nodes for automatic link detection
-    text: ({ node, children, ...props }) => {
-      if (typeof children !== "string") return <>{children}</>;
-
-      // Simple auto-link detection for plain URLs
-      const urlRegex = /(https?:\/\/[^\s]+)/g;
-      const parts = children.split(urlRegex);
-
-      if (parts.length === 1) return <>{children}</>;
-
-      return (
-        <>
-          {parts.map((part, i) => {
-            if (i % 2 === 0) return part;
-
-            if (!MediaProcessor.isURLAllowed(part)) {
-              return (
-                <span key={i} className="text-red-500">
-                  [Unsafe URL]
-                </span>
-              );
-            }
-
-            const mediaType = MediaProcessor.detectMediaType(part);
-            switch (mediaType) {
-              case "youtube":
-                const videoId = MediaProcessor.extractYouTubeId(part);
-                if (!videoId) return part;
-                return (
-                  <YouTubeEmbed
-                    key={i}
-                    videoId={videoId}
-                    config={mediaConfig}
-                    className="my-6"
-                  />
-                );
-
-              case "vimeo":
-              case "spotify":
-              case "twitter":
-                return (
-                  <SocialEmbed
-                    key={i}
-                    url={part}
-                    type={mediaType}
-                    config={mediaConfig}
-                    className="my-6"
-                  />
-                );
-
-              default:
-                return (
-                  <ExternalLink key={i} href={part} config={mediaConfig}>
-                    {part}
-                  </ExternalLink>
-                );
-            }
-          })}
-        </>
-      );
-    },
   };
 
   return (
     <div className={className}>
       <ReactMarkdown
-        components={components}
+        remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeRaw, rehypeSanitize]}
-        remarkPlugins={[]}
-        skipHtml={false}
+        components={components}
       >
         {content}
       </ReactMarkdown>
