@@ -1,6 +1,7 @@
 import { fetchMetadataByPostId } from "@/actions/db/queries";
 import { FormPageHeader } from "@/components/form-page-header";
 import { SEOForm } from "@/components/posts/post-seo/seo-form";
+import { requireSession } from "@/lib/better-auth/server-auth";
 import { redirect } from "next/navigation";
 
 export default async function SeoPage({
@@ -8,6 +9,12 @@ export default async function SeoPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const session = await requireSession();
+
+  if (!session) {
+    redirect("/login");
+  }
+
   const { id } = await params;
   const metadata = await fetchMetadataByPostId(id);
 
