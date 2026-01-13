@@ -99,6 +99,12 @@ export const setPostStatusToArchive = async (
     return error as string;
   }
 };
+
+// | Post Status | robots              |
+// | ----------- | ------------------- |
+// | `draft`     | `noindex, nofollow` |
+// | `published` | `index, follow`     |
+// | `archived`  | `noindex, follow`   |
 export const setPostStatusToDraft = async (
   id: string
 ): Promise<string | null> => {
@@ -128,8 +134,16 @@ export const setPostStatusToDraft = async (
   }
 };
 
-// | Post Status | robots              |
-// | ----------- | ------------------- |
-// | `draft`     | `noindex, nofollow` |
-// | `published` | `index, follow`     |
-// | `archived`  | `noindex, follow`   |
+export const fetchMetadataByPostId = async (id: string) => {
+  const metadata = await sql`
+  SELECT 
+    "postId", 
+    "metaTitle", 
+    "metaDescription", 
+    "keywords" 
+  FROM post_seo
+  WHERE "postId" = ${id}
+  `;
+
+  return metadata[0];
+};
