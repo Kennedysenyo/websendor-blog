@@ -1,3 +1,4 @@
+//lib/sanitize.ts
 import DOMPurify from "dompurify";
 
 export const sanitizeConfig = {

@@ -1,22 +1,22 @@
 // components/markdown/MarkdownRenderer.tsx
-import React, { ReactNode, HTMLAttributes } from "react";
+import React from "react";
 import ReactMarkdown from "react-markdown";
 import type { Components } from "react-markdown";
-import rehypeSanitize from "rehype-sanitize";
-import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
+import rehypeSanitize from "rehype-sanitize";
 
 import { MediaProcessor } from "@/processors/media-processor";
-import { MediaConfig } from "@/types/markdown";
+import type { MediaConfig } from "@/types/markdown";
 
 import { MarkdownImage } from "./MediaComponents/MarkdownImage";
 import { YouTubeEmbed } from "./MediaComponents/YoutubeEmbed";
 import { SocialEmbed } from "./MediaComponents/SocialEmbed";
 import { FileDownload } from "./MediaComponents/FileDownload";
-import { ExternalLink } from "./MediaComponents/ExternalLinks";
+import { ExternalLink } from "./MediaComponents/ExternalLink";
 
-import { remarkMediaBlocks } from "@/lib/remark-media-blocks";
-import { rehypeMedia } from "@/lib/rehype-media";
+import { remarkMediaEmbedder } from "@/lib/remark-media-embedder";
+import { markdownSchema } from "@/lib/markdown/sanitize";
 
 interface MarkdownRendererProps {
   content: string;
@@ -24,138 +24,70 @@ interface MarkdownRendererProps {
   className?: string;
 }
 
-type ExtendedComponents = Components & {
-  media?: React.FC<{ node: { url: string } }>;
-};
-
-// -----------------------
-// Helper: Detect block-level elements
-// -----------------------
-function isBlockElement(child: ReactNode): boolean {
-  if (!React.isValidElement(child)) return false;
-
-  // HTML block elements
-  const blockTypes = [
-    "div",
-    "figure",
-    "iframe",
-    "pre",
-    "blockquote",
-    "ul",
-    "ol",
-    "li",
-    "table",
-    "h1",
-    "h2",
-    "h3",
-    "h4",
-    "h5",
-    "h6",
-  ];
-
-  // Custom media components (they render block elements)
-  const customBlockComponents = [
-    YouTubeEmbed,
-    SocialEmbed,
-    FileDownload,
-    MarkdownImage,
-  ];
-
-  if (typeof child.type === "string") return blockTypes.includes(child.type);
-  if (customBlockComponents.includes(child.type as any)) return true;
-
-  return false;
-}
-
-// -----------------------
-// Custom Paragraph component
-// -----------------------
-const MarkdownParagraph: React.FC<HTMLAttributes<HTMLParagraphElement>> = ({
-  children,
-  ...props
-}) => {
-  const childrenArray = React.Children.toArray(children);
-
-  const newChildren: ReactNode[] = [];
-  let inlineGroup: ReactNode[] = [];
-
-  childrenArray.forEach((child, index) => {
-    if (isBlockElement(child)) {
-      if (inlineGroup.length) {
-        newChildren.push(
-          <p key={`p-${newChildren.length}`} {...props}>
-            {inlineGroup}
-          </p>
-        );
-        inlineGroup = [];
-      }
-      if (React.isValidElement(child)) {
-        newChildren.push(React.cloneElement(child, { key: `block-${index}` }));
-      } else {
-        newChildren.push(child);
-      }
-    } else {
-      inlineGroup.push(child);
-    }
-  });
-
-  if (inlineGroup.length) {
-    newChildren.push(
-      <p key={`p-${newChildren.length}`} {...props}>
-        {inlineGroup}
-      </p>
-    );
-  }
-
-  return <>{newChildren}</>;
-};
-
-// -----------------------
-// MarkdownRenderer component
-// -----------------------
 export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
   content,
   mediaConfig = {},
   className = "prose prose-lg max-w-none",
 }) => {
-  const components: ExtendedComponents = {
+  const components = {
     media: ({ node }: any) => {
-      const url = node.properties.url;
+      // console.log(
+      //   "MEDIA props keys:",
+      //   Object.keys((node as any)?.properties || {})
+      // );
+      const props = (node as any)?.properties || {};
+      const urlProp = props["dataUrl"] ?? props["data-url"];
 
-      if (!MediaProcessor.isURLAllowed(url)) {
-        return <span className="text-red-500">[Blocked media]</span>;
-      }
+      let url: string | null = null;
+      if (typeof urlProp === "string") url = urlProp;
+      else if (Array.isArray(urlProp) && typeof urlProp[0] === "string")
+        url = urlProp[0];
+      else if (urlProp != null) url = String(urlProp);
 
-      const type = MediaProcessor.detectMediaType(url);
+      if (!url) return null;
 
-      switch (type) {
-        case "youtube": {
-          const id = MediaProcessor.extractYouTubeId(url);
-          return id ? <YouTubeEmbed videoId={id} config={mediaConfig} /> : null;
+      try {
+        const decodedUrl = decodeURIComponent(url);
+        if (!MediaProcessor.isURLAllowed(decodedUrl))
+          return <span>[Blocked]</span>;
+        const type = MediaProcessor.detectMediaType(decodedUrl);
+
+        switch (type) {
+          case "youtube": {
+            const id = MediaProcessor.extractYouTubeId(decodedUrl);
+            return id ? (
+              <YouTubeEmbed videoId={id} config={mediaConfig} />
+            ) : null;
+          }
+
+          case "vimeo":
+          case "spotify":
+          case "twitter":
+            return (
+              <SocialEmbed url={decodedUrl} type={type} config={mediaConfig} />
+            );
+
+          case "file": {
+            const info = MediaProcessor.getFileInfo(decodedUrl);
+            return (
+              <FileDownload
+                url={decodedUrl}
+                fileName={info.name}
+                fileType={info.type}
+                config={mediaConfig}
+              />
+            );
+          }
+
+          default:
+            return <ExternalLink href={decodedUrl}>{decodedUrl}</ExternalLink>;
         }
-
-        case "vimeo":
-        case "spotify":
-        case "twitter":
-          return <SocialEmbed url={url} type={type} config={mediaConfig} />;
-
-        case "image":
-          return <MarkdownImage src={url} alt="" config={mediaConfig} />;
-
-        case "file": {
-          const file = MediaProcessor.getFileInfo(url);
-          return (
-            <FileDownload url={url} fileName={file.name} fileType={file.type} />
-          );
-        }
-
-        default:
-          return <ExternalLink href={url}>{url}</ExternalLink>;
+      } catch {
+        return null;
       }
     },
 
-    // Images
-    img: ({ src, alt, title, ...props }) => {
+    img: ({ src, alt, title }: any) => {
       if (
         !src ||
         typeof src !== "string" ||
@@ -163,7 +95,6 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
       ) {
         return <span className="text-red-500">[Unsafe Image Blocked]</span>;
       }
-
       return (
         <MarkdownImage
           src={src}
@@ -175,19 +106,26 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
       );
     },
 
-    // Links (media and external)
-    a: ({ href, children }) => {
-      if (!href) return <a>{children}</a>;
+    a: ({ href, children }: any) => {
+      // if (!href) return <a>{children}</a>;
+      if (!href) {
+        // return <span className="text-red-500">[Blocked]</span>;
+        return <span>{children}</span>; // if you prefer silent downgrade
+      }
       if (!MediaProcessor.isURLAllowed(href)) return <span>[Blocked]</span>;
       return <ExternalLink href={href}>{children}</ExternalLink>;
     },
-  };
+  } satisfies Components & Record<string, any>;
 
   return (
     <div className={className}>
       <ReactMarkdown
-        remarkPlugins={[remarkGfm, remarkMediaBlocks]}
-        rehypePlugins={[rehypeMedia, rehypeRaw, rehypeSanitize]}
+        remarkPlugins={[remarkGfm, remarkMediaEmbedder]}
+        remarkRehypeOptions={{ allowDangerousHtml: true }}
+        rehypePlugins={[
+          rehypeRaw, // parses the raw html into HAST nodes
+          [rehypeSanitize, markdownSchema],
+        ]}
         components={components}
       >
         {content}

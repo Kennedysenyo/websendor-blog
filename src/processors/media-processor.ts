@@ -29,26 +29,24 @@ export class MediaProcessor {
     return url.split("?")[0].toLowerCase();
   }
 
+  // processors/media-processor.ts
   static detectMediaType(url: string): MediaType {
     const clean = this.stripQuery(url);
 
     // Images FIRST
     if (this.patterns.image.test(clean)) return "image";
 
-    // YouTube
+    // YouTube and other media platforms BEFORE generic file check
     if (this.patterns.youtube.some((p) => p.test(url))) return "youtube";
-
-    // Platforms
     if (this.patterns.vimeo.some((p) => p.test(url))) return "vimeo";
     if (this.patterns.spotify.some((p) => p.test(url))) return "spotify";
     if (this.patterns.twitter.some((p) => p.test(url))) return "twitter";
 
-    // Files
+    // Files LAST
     if (this.patterns.file.test(clean)) return "file";
 
     return "link";
   }
-
   // ----------------------------
   // ID Extractors
   // ----------------------------
@@ -133,6 +131,7 @@ export class MediaProcessor {
         "open.spotify.com",
         "twitter.com",
         "x.com",
+        "twitframe.com",
       ];
 
       return allowedDomains.some(
@@ -147,6 +146,7 @@ export class MediaProcessor {
   /**
    * Master gatekeeper used by renderer
    */
+  // processors/media-processor.ts
   static isURLAllowed(url: string): boolean {
     const type = this.detectMediaType(url);
 
@@ -163,21 +163,9 @@ export class MediaProcessor {
       }
     }
 
-    // embeds: validate the EMBED url, not the source
-    if (type === "youtube") {
-      return true; // embed URL will be constructed safely
-    }
-
-    if (type === "vimeo") {
-      return true;
-    }
-
-    if (type === "spotify") {
-      return true;
-    }
-
-    if (type === "twitter") {
-      return true;
+    // For embeds (YouTube, Spotify, etc.), allow if they pass safe embed check
+    if (["youtube", "vimeo", "spotify", "twitter"].includes(type)) {
+      return this.isSafeEmbedURL(url);
     }
 
     // normal links

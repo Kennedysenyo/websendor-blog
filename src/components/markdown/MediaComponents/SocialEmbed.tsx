@@ -26,7 +26,7 @@ export const SocialEmbed: React.FC<SocialEmbedProps> = ({
 
       case "spotify":
         const spotifyMatch = url.match(
-          /spotify\.com\/(track|album|playlist|episode|show)\/([a-zA-Z0-9]+)/
+          /spotify\.com\/(track|album|playlist|episode|show)\/([a-zA-Z0-9]+)(\?|$)/
         );
         if (spotifyMatch) {
           return `https://open.spotify.com/embed/${spotifyMatch[1]}/${spotifyMatch[2]}`;
