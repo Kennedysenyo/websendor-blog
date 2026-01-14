@@ -1,5 +1,6 @@
 "use server";
 
+import { notFound } from "next/navigation";
 import { sql } from "../../../db/db";
 import { revalidatePath } from "next/cache";
 
@@ -11,7 +12,8 @@ export const fetchCategories = async () => {
 };
 
 export const fetchPostById = async (id: string) => {
-  const post = await sql`
+  try {
+    const post = await sql`
   SELECT 
     post."id", 
     post."title", 
@@ -32,7 +34,10 @@ export const fetchPostById = async (id: string) => {
   WHERE post."id" = ${id};
 `;
 
-  return post[0];
+    return post[0];
+  } catch {
+    notFound();
+  }
 };
 
 export const fetchPostStatus = async (id: string) => {
@@ -148,4 +153,17 @@ export const fetchMetadataByPostId = async (id: string) => {
   return metadata[0];
 };
 
-// export const fetchPostById;
+export const fetchAllPosts = async () => {
+  const posts = await sql`
+  SELECT
+    posts.id,
+    posts.title,
+    posts.status,
+    posts_categories.name AS "category"
+  FROM posts
+  INNER JOIN posts_categories
+    ON posts."categoryId" = posts_categories.id;
+`;
+  console.log(posts);
+  return posts;
+};
