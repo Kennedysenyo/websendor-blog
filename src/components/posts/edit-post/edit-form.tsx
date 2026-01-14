@@ -35,12 +35,12 @@ export const EditPostForm = ({ post, categories, postId }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [formData, setFormData] = useState<FormFields>({
-    title: post.title || "",
-    slug: post.slug || "",
-    content: post.contentMd || "",
-    excerpt: post.excerpt || "",
-    category: post.categoryId || "",
-    featuredImage: post.featuredImage || "",
+    title: post.title,
+    slug: post.slug,
+    content: post.contentMd,
+    excerpt: post.excerpt,
+    category: post.categoryId,
+    featuredImage: post.featuredImage,
   });
 
   const handleFormFieldChange = (
@@ -143,14 +143,14 @@ export const EditPostForm = ({ post, categories, postId }: Props) => {
 
   useEffect(() => {
     if (state.success) {
-      setFormData({
-        title: "",
-        slug: "",
-        content: undefined,
-        excerpt: "",
-        category: "",
-        featuredImage: "",
-      });
+      // setFormData({
+      //   title: "",
+      //   slug: "",
+      //   content: undefined,
+      //   excerpt: "",
+      //   category: "",
+      //   featuredImage: "",
+      // });
       router.push(`/posts/${postId}/preview`);
     }
   }, [state, router]);

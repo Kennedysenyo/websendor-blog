@@ -27,13 +27,15 @@ export const saveEdit = async (
 
     await sql`
       UPDATE posts
-      "title" = ${data.title},
-      "slug" = ${data.slug},
-      "contentMd" =${data.content},
-      "excerpt" = ${data.excerpt},
-      "featuredImage" = ${data.featuredImage},
-      "categoryId"= ${data.categoryId}
-      `;
+      SET
+        "title" = ${data.title},
+        "slug" = ${data.slug},
+        "contentMd" = ${data.content},
+        "excerpt" = ${data.excerpt},
+        "featuredImage" = ${data.featuredImage},
+        "categoryId" = ${data.categoryId}
+      WHERE id = ${postId}
+    `;
 
     return null;
   } catch (error) {
