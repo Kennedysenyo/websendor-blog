@@ -35,7 +35,7 @@ export const fetchPostById = async (id: string) => {
   return post[0];
 };
 
-export const fetPostStatus = async (id: string) => {
+export const fetchPostStatus = async (id: string) => {
   const res = await sql`
     SELECT id, status FROM posts WHERE posts.id = ${id}
   `;
@@ -147,3 +147,5 @@ export const fetchMetadataByPostId = async (id: string) => {
 
   return metadata[0];
 };
+
+// export const fetchPostById;

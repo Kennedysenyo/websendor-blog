@@ -3,9 +3,9 @@
 import { requireSession } from "@/lib/better-auth/server-auth";
 import { sql } from "../../../db/db";
 import { handleError } from "@/utils/handle-error";
-import { ReturnedData } from "./post-form-validator";
+import { ReturnedData } from "@/types/types";
 
-interface DataType {
+interface PostDataType {
   title: string;
   slug: string;
   content: string;
@@ -21,7 +21,7 @@ if (!baseUrl) {
   );
 }
 
-export const savePost = async (data: DataType): Promise<ReturnedData> => {
+export const savePost = async (data: PostDataType): Promise<ReturnedData> => {
   try {
     // console.table(data);
 

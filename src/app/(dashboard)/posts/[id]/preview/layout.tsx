@@ -1,4 +1,4 @@
-import { fetPostStatus } from "@/actions/db/queries";
+import { fetchPostStatus } from "@/actions/db/queries";
 import { ActionsBar } from "@/components/posts/preview-post/actions-bar";
 import { ReactNode } from "react";
 
@@ -10,7 +10,7 @@ export default async function PreviewLayout({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const post = await fetPostStatus(id);
+  const post = await fetchPostStatus(id);
   return (
     <div className="relative h-full">
       <ActionsBar postId={post.id} postStatus={post.status} />

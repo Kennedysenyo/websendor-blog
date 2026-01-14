@@ -1,12 +1,13 @@
 "use server";
 
-import { FormErrors, ResponseType } from "@/types/types";
-import { savePost } from "./save-post";
+import { EditResponseType, FormErrors, ResponseType } from "@/types/types";
+import { saveEdit } from "./save-edit";
 
-export const postFormValidator = async (
-  _prevState: ResponseType,
+export const editFormValidator = async (
+  postId: string,
+  _prevState: EditResponseType,
   formData: FormData
-): Promise<ResponseType> => {
+): Promise<EditResponseType> => {
   const title = (formData.get("title") as string).trim();
   const slug = (formData.get("slug") as string).trim();
   const content = (formData.get("content") as string).trim();
@@ -54,11 +55,11 @@ export const postFormValidator = async (
     return {
       errors,
       success: false,
-      returned: { postId: null, errorMessage: null },
+      errorMessage: null,
     };
   }
 
-  const { postId, errorMessage } = await savePost({
+  const errorMessage = await saveEdit(postId, {
     title,
     slug,
     content,
@@ -71,12 +72,12 @@ export const postFormValidator = async (
     return {
       errors: {},
       success: false,
-      returned: { postId: null, errorMessage },
+      errorMessage,
     };
   }
   return {
     errors: {},
     success: true,
-    returned: { postId, errorMessage: null },
+    errorMessage: null,
   };
 };

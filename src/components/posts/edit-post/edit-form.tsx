@@ -3,15 +3,15 @@ import { Save } from "lucide-react";
 import { Button } from "../../ui/button";
 import { Spinner } from "../../ui/spinner";
 import { ChangeEvent, useActionState, useEffect, useState } from "react";
-import { MarkdownEditor } from "./markdown-editor";
-import { ImageUploader } from "./image-uploader";
-import { postFormValidator } from "@/actions/posts/post-form-validator";
 import { slugify } from "@/utils/slugify";
 import postgres from "postgres";
 import { capitalizeText } from "@/utils/capitalize-text";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { ResponseType } from "@/types/types";
+import { MarkdownEditor } from "../new-post/markdown-editor";
+import { ImageUploader } from "../new-post/image-uploader";
+import { EditResponseType } from "@/types/types";
+import { editFormValidator } from "@/actions/posts/edit-post-form-validator";
 
 interface FormFields {
   title: string;
@@ -24,21 +24,23 @@ interface FormFields {
 
 interface Props {
   categories: postgres.RowList<postgres.Row[]>;
+  post: postgres.Row;
+  postId: string;
 }
 
-export const NewPostForm = ({ categories }: Props) => {
+export const EditPostForm = ({ post, categories, postId }: Props) => {
   const router = useRouter();
   const [imageUploadErrorMessage, setImageUploadErrorMessage] =
     useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [formData, setFormData] = useState<FormFields>({
-    title: "",
-    slug: "",
-    content: undefined,
-    excerpt: "",
-    category: "",
-    featuredImage: "",
+    title: post.title || "",
+    slug: post.slug || "",
+    content: post.contentMd || "",
+    excerpt: post.excerpt || "",
+    category: post.categoryId || "",
+    featuredImage: post.featuredImage || "",
   });
 
   const handleFormFieldChange = (
@@ -122,14 +124,14 @@ export const NewPostForm = ({ categories }: Props) => {
     }
   };
 
-  const initialState: ResponseType = {
+  const initialState: EditResponseType = {
     errors: {},
     success: false,
-    returned: { postId: null, errorMessage: null },
+    errorMessage: null,
   };
 
   const [state, formAction, isPending] = useActionState(
-    postFormValidator,
+    editFormValidator.bind(null, postId),
     initialState
   );
 
@@ -149,7 +151,7 @@ export const NewPostForm = ({ categories }: Props) => {
         category: "",
         featuredImage: "",
       });
-      router.push(`/posts/${state.returned.postId}/preview`);
+      router.push(`/posts/${postId}/preview`);
     }
   }, [state, router]);
 
@@ -158,19 +160,19 @@ export const NewPostForm = ({ categories }: Props) => {
       <div className="bg-sidebar rounded-md shadow-md p-2 md:p-4 border border-gray-100 mx-auto flex flex-col h-full  sm:max-w-[900px]">
         <div className="relative flex items-center mb-2">
           <h3 className="text-2xl font-serif font-bold text-brand-blue">
-            New Post
+            Edit Post
           </h3>
 
-          {state.returned.errorMessage && (
+          {state.errorMessage && (
             <p className="absolute left-1/2 -translate-x-1/2 text-red-500">
-              {state.returned.errorMessage}
+              {state.errorMessage}
             </p>
           )}
         </div>
 
-        <span className="py-1 px-4 border border-gray-100 font-semibold text-brand-blue rounded-lg bg-white self-start mb-4">
+        {/* <span className="py-1 px-4 border border-gray-100 font-semibold text-brand-blue rounded-lg bg-white self-start mb-4">
           Draft
-        </span>
+        </span> */}
 
         <form
           action={formAction}
