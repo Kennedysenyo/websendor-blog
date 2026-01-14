@@ -1,15 +1,22 @@
-import { Link, Plus } from "lucide-react";
+"use client";
+import { Plus } from "lucide-react";
+
+import { Button } from "./ui/button";
+import Link from "next/link";
+
 interface Props {
-  lable: string;
+  label: string;
 }
-export const AddButton = ({ lable }: Props) => {
+export const AddButton = ({ label }: Props) => {
   return (
-    <Link
-      href="/posts/new"
-      className="shadow-md flex gap-1 md:gap-2 items-center px-3 py-1 md:px-4 py-2 bg-brand-blue hover:bg-brand-blue/90 rounded-md text-white"
+    <Button
+      asChild
+      className="text-white bg-brand-blue hover:bg-brand-blue/90 cursor-pointer"
     >
-      <Plus className="w-5 h-5 md:w-6 md:h-6" />
-      <span className="text-sm sm:text-lg md:text-xl">{lable}</span>
-    </Link>
+      <Link href="/posts/new">
+        <Plus className="size-5" />
+        <span className="hidden sm:block">{label}</span>
+      </Link>
+    </Button>
   );
 };

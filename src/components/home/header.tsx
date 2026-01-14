@@ -30,7 +30,7 @@ export const HomeHeader = ({ name }: Props) => {
         {greeting}{" "}
         <span className="text-brand-green">{name.split(" ")[0]}</span>
       </h1>
-      <AddButton lable="Add Post" />
+      <AddButton label="Add Post" />
     </div>
   );
 };
