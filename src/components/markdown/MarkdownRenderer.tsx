@@ -55,6 +55,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
         switch (type) {
           case "youtube": {
             const id = MediaProcessor.extractYouTubeId(decodedUrl);
+            console.log("The video id, ", id);
             return id ? (
               <YouTubeEmbed videoId={id} config={mediaConfig} />
             ) : null;

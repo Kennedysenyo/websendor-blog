@@ -3,6 +3,7 @@ import React from "react";
 import { MediaType } from "@/types/markdown";
 import { BaseMediaProps } from "@/types/markdown";
 import { cn } from "@/lib/utils";
+import { TwitterEmbed } from "./TwitterEmbed";
 
 interface SocialEmbedProps extends BaseMediaProps {
   type: MediaType;
@@ -55,6 +56,10 @@ export const SocialEmbed: React.FC<SocialEmbedProps> = ({
   };
 
   const embedUrl = getEmbedUrl();
+
+  if (type === "twitter") {
+    return <TwitterEmbed url={url} className={className} style={style} />;
+  }
 
   return (
     <div className={cn("relative w-full my-6", className)} style={style}>
