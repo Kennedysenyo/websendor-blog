@@ -5,34 +5,37 @@ import { sql } from "../../../db/db";
 import { revalidatePath } from "next/cache";
 
 export const fetchCategories = async () => {
-  const categories = await sql`
+  try {
+    const categories = await sql`
     SELECT id, name, slug FROM posts_categories;
   `;
-  return categories;
+    return categories;
+  } catch {
+    notFound();
+  }
 };
 
 export const fetchPostById = async (id: string) => {
   try {
     const post = await sql`
-  SELECT 
-    post."id", 
-    post."title", 
-    post."slug",
-    post."contentMd", 
-    post."excerpt", 
-    post."featuredImage", 
-    post."status",
-    post."publishedAt",
-    category."id" AS "categoryId",
-    category."name" AS "category",
-    author."name" AS "author"
-  FROM "posts" post
-  LEFT JOIN "posts_categories" category 
-    ON category."id" = post."categoryId"
-  LEFT JOIN "user" author 
-    ON post."authorId" = author."id"
-  WHERE post."id" = ${id};
-`;
+      SELECT 
+        post."id", 
+        post."title", 
+        post."slug",
+        post."excerpt", 
+        post."featuredImage", 
+        post."status",
+        post."publishedAt",
+        category."id" AS "categoryId",
+        category."name" AS "category",
+        author."name" AS "author"
+      FROM "posts" post
+      LEFT JOIN "posts_categories" category 
+        ON category."id" = post."categoryId"
+      LEFT JOIN "user" author 
+        ON post."authorId" = author."id"
+      WHERE post."id" = ${id};
+    `;
 
     return post[0];
   } catch {
@@ -41,11 +44,15 @@ export const fetchPostById = async (id: string) => {
 };
 
 export const fetchPostStatus = async (id: string) => {
-  const res = await sql`
+  try {
+    const res = await sql`
     SELECT id, status FROM posts WHERE posts.id = ${id}
   `;
 
-  return res[0];
+    return res[0];
+  } catch {
+    notFound();
+  }
 };
 
 export const setPostStatusToPublish = async (
@@ -140,17 +147,21 @@ export const setPostStatusToDraft = async (
 };
 
 export const fetchMetadataByPostId = async (id: string) => {
-  const metadata = await sql`
-  SELECT 
-    "postId", 
-    "metaTitle", 
-    "metaDescription", 
-    "keywords" 
-  FROM post_seo
-  WHERE "postId" = ${id}
-  `;
+  try {
+    const metadata = await sql`
+      SELECT 
+        "postId", 
+        "metaTitle", 
+        "metaDescription", 
+        "keywords" 
+      FROM post_seo
+      WHERE "postId" = ${id}
+      `;
 
-  return metadata[0];
+    return metadata[0];
+  } catch {
+    notFound();
+  }
 };
 
 export const fetchAllPosts = async () => {
@@ -162,8 +173,23 @@ export const fetchAllPosts = async () => {
     posts_categories.name AS "category"
   FROM posts
   INNER JOIN posts_categories
-    ON posts."categoryId" = posts_categories.id;
+    ON posts."categoryId" = posts_categories.id
+  ORDER BY posts."createdAt" DESC ;
 `;
-  console.log(posts);
+  // console.log(posts);
   return posts;
+};
+
+export const fetchPostContentById = async (id: string) => {
+  try {
+    const content = await sql`
+    SELECT "contentMd" FROM posts
+    WHERE id = ${id}
+  `;
+
+    // await sleep(2000);
+    return content[0];
+  } catch {
+    notFound();
+  }
 };

@@ -1,4 +1,5 @@
 // components/markdown/MediaComponents/MarkdownImage.tsx
+"use client";
 import React, { useState } from "react";
 import Image from "next/image";
 import { WithoutUrlBaseMediaProps } from "@/types/markdown";
