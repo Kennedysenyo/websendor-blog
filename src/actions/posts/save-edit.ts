@@ -26,16 +26,18 @@ export const saveEdit = async (
     }
 
     await sql`
-      UPDATE posts
-      SET
-        "title" = ${data.title},
-        "slug" = ${data.slug},
-        "contentMd" = ${data.content},
-        "excerpt" = ${data.excerpt},
-        "featuredImage" = ${data.featuredImage},
-        "categoryId" = ${data.categoryId}
-      WHERE id = ${postId}
-    `;
+  UPDATE posts
+  SET
+    "title" = ${data.title},
+    "slug" = ${data.slug},
+    "contentMd" = ${data.content},
+    "excerpt" = ${data.excerpt},
+    "featuredImage" = ${data.featuredImage},
+    "categoryId" = ${data.categoryId}
+  WHERE id = ${postId};
+`;
+
+    // console.table(post[0]);
 
     return null;
   } catch (error) {

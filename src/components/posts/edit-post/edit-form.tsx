@@ -34,14 +34,14 @@ export const EditPostForm = ({ post, categories, postId }: Props) => {
     useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const [formData, setFormData] = useState<FormFields>({
+  const [formData, setFormData] = useState<FormFields>(() => ({
     title: post.title,
     slug: post.slug,
     content: post.contentMd,
     excerpt: post.excerpt,
     category: post.categoryId,
     featuredImage: post.featuredImage,
-  });
+  }));
 
   const handleFormFieldChange = (
     e:
@@ -69,7 +69,11 @@ export const EditPostForm = ({ post, categories, postId }: Props) => {
   };
 
   const setValue = (value: string | undefined) => {
-    setFormData((prev) => ({ ...prev, content: value }));
+    setFormData((prev) => {
+      const newValue = { ...prev, content: value };
+      // console.log(newValue);
+      return newValue;
+    });
   };
 
   const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -242,7 +246,8 @@ export const EditPostForm = ({ post, categories, postId }: Props) => {
                   className="hidden"
                   id="content"
                   name="content"
-                  defaultValue={formData.content}
+                  readOnly
+                  value={formData.content}
                 ></textarea>
                 {state.errors.content && (
                   <small className="text-xs text-red-500">

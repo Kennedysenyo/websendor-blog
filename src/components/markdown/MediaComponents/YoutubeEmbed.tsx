@@ -33,7 +33,7 @@ export const YouTubeEmbed: React.FC<YouTubeEmbedProps> = ({
       // enablejsapi: "1",
     }
   ).toString()}`;
-  console.log("The embeded url", embedUrl);
+  // console.log("The embeded url", embedUrl);
 
   return (
     <div className={cn("relative w-full my-6", className)} style={style}>
