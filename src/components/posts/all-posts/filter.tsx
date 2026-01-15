@@ -68,6 +68,7 @@ export const Filter = ({ categories }: Props) => {
   return (
     <div className=" p-2 flex flex-col lg:flex-row lg:items-center gap-4 w-3/4 relative">
       <div className="flex-1">
+        <Search className="absolute left-3 top-7 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
         <label htmlFor="term" className="sr-only">
           Search
         </label>
@@ -79,7 +80,6 @@ export const Filter = ({ categories }: Props) => {
           value={filter.term}
           onChange={handleSearch}
         />
-        <Search className="absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
       </div>
       <div className="lg:w-1/2 flex gap-2 items-center">
         <div className="flex items-center gap-1 w-1/2">
