@@ -8,7 +8,7 @@ export default async function PostsPage() {
 
   // console.table(posts);
   return (
-    <div className="p-4 md:px-8 h-full flex flex-col overflow-y-auto bg-green-500">
+    <div className="p-4 md:px-8 h-full flex flex-col overflow-y-auto">
       <div className="p-4 flex justify-between">
         <Filter categories={categories} />
         <AddButton label="Add Post" />
