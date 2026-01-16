@@ -101,7 +101,7 @@ export const setPostStatusToArchive = async (
         WHERE "postId" = ${id};
       `;
     });
-    revalidatePath(`posts/${id}/preview`);
+    revalidatePath(`/posts/${id}/preview`);
     return null;
   } catch (error) {
     if (error instanceof Error) {
@@ -134,7 +134,7 @@ export const setPostStatusToDraft = async (
         WHERE "postId" = ${id};
       `;
     });
-    revalidatePath(`posts/${id}/preview`);
+    revalidatePath(`/posts/${id}/preview`);
 
     return null;
   } catch (error) {
@@ -324,4 +324,20 @@ export const fetchPostsByFilter = async (
     console.error(error);
     throw new Error("Error fetching posts");
   }
+};
+
+export const deletePostById = async (id: string) => {
+  try {
+    const deletedPostId = await sql`
+    DELETE FROM posts WHERE posts.id = ${id} RETURNING id;`;
+    revalidatePath(`/posts/`);
+
+    return deletedPostId[0];
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+    }
+    console.error(error as string);
+  }
+  throw new Error("Failed to Delete Post");
 };

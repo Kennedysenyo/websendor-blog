@@ -13,6 +13,7 @@ import { capitalizeFirstLetter } from "better-auth";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Eye, FilePen, Trash2 } from "lucide-react";
+import { DeleteButton } from "./delete-button";
 
 interface Props {
   currentPage: string;
@@ -108,12 +109,7 @@ export const PostTable = async ({
                     <FilePen className="size-4 text-white" />
                   </Link>
                 </Button>
-                <Button
-                  size="sm"
-                  className="bg-red-500 hover:bg-red-500/90 cursor-pointer"
-                >
-                  <Trash2 className="size-4 text-white" />
-                </Button>
+                <DeleteButton id={post.id} size="sm" />
               </div>
             </div>
           </div>

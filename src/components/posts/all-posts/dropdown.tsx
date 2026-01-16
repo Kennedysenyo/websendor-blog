@@ -30,7 +30,7 @@ export const DropDown = ({ id }: Props) => {
         </DropdownMenuItem>
         <DropdownMenuItem
           asChild
-          className="bg-brand-blue cursor-pointer hover:bg-brand-blue/90"
+          className="bg-brand-blue cu hover:bg-brand-blue/90"
         >
           <Link
             className="flex items-center gap-2 text-white"
