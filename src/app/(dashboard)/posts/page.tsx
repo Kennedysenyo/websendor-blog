@@ -1,4 +1,4 @@
-import { fetCategoriesAndPostsTotalPages } from "@/actions/db/queries";
+import { fetchCategoriesAndPostsTotalPages } from "@/actions/db/queries";
 import { AddButton } from "@/components/AddButton";
 import { Filter } from "@/components/posts/all-posts/filter";
 import Pagination from "@/components/posts/all-posts/Paginations";
@@ -30,7 +30,7 @@ export default async function PostsPage({
   const category = params.cat || "";
   const status = params.status || "";
   const currentPage = params.page || "1";
-  const { totalPages, categories } = await fetCategoriesAndPostsTotalPages(
+  const { totalPages, categories } = await fetchCategoriesAndPostsTotalPages(
     term,
     category,
     status
@@ -40,7 +40,7 @@ export default async function PostsPage({
     <div className="p-4 md:px-8 h-full flex flex-col overflow-y-auto">
       <div className="p-4 flex justify-between">
         <Filter categories={categories} />
-        <AddButton label="Add Post" />
+        <AddButton url="/posts/new" label="Add Post" />
       </div>
       <Suspense
         key={term + category + status + currentPage}

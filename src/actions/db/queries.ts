@@ -249,7 +249,7 @@ export const fetchPostsTotalPages = async (
   }
 };
 
-export const fetCategoriesAndPostsTotalPages = async (
+export const fetchCategoriesAndPostsTotalPages = async (
   term: string,
   category: string,
   status: string
@@ -332,6 +332,100 @@ export const deletePostById = async (id: string) => {
     const deletedPostId = await sql`
     DELETE FROM posts WHERE posts.id = ${id} RETURNING id;`;
     revalidatePath(`/posts/`);
+
+    return deletedPostId[0];
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+    }
+    console.error(error as string);
+  }
+  throw new Error("Failed to Delete Post");
+};
+
+export const fetchCategoriesTotalPages = async (term: string) => {
+  try {
+    const conditions = [];
+
+    if (term?.trim()) {
+      conditions.push(sql`
+        (
+          posts_categories.id::TEXT ILIKE ${`%${term}%`} OR
+          posts_categories.name ILIKE ${`%${term}%`} OR
+          posts_categories.slug ILIKE ${`%${term}%`} 
+          
+        )
+      `);
+    }
+
+    const where = conditions.length
+      ? sql`WHERE ${conditions.reduce(
+          (acc, curr, i) => (i === 0 ? curr : sql`${acc} AND ${curr}`),
+          sql``
+        )}`
+      : sql``;
+
+    const result = await sql`
+      SELECT COUNT(*) AS total
+      FROM posts_categories
+      ${where};
+    `;
+
+    return Math.ceil(Number(result[0].total) / ITEMS_PER_PAGE);
+  } catch (error) {
+    console.error(error);
+    throw new Error("Error fetching post count");
+  }
+};
+
+export const fetchCategoriesByFilter = async (
+  currentPage: number,
+  term: string
+) => {
+  try {
+    const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+    const conditions = [];
+
+    if (term?.trim()) {
+      conditions.push(sql`
+        (
+          posts_categories.id::TEXT ILIKE ${`%${term}%`} OR
+          posts_categories.name ILIKE ${`%${term}%`} OR
+          posts_categories.slug ILIKE ${`%${term}%`}
+        )
+      `);
+    }
+
+    const where = conditions.length
+      ? sql`WHERE ${conditions.reduce(
+          (acc, curr, i) => (i === 0 ? curr : sql`${acc} AND ${curr}`),
+          sql``
+        )}`
+      : sql``;
+
+    const result = await sql`
+      SELECT 
+        id,
+        name,
+        slug
+      FROM posts_categories
+      ${where}
+      ORDER BY posts_categories."createdAt" DESC
+      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset};
+    `;
+
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Error fetching categories");
+  }
+};
+
+export const deleteCategoryById = async (id: string) => {
+  try {
+    const deletedPostId = await sql`
+    DELETE FROM posts_categories WHERE posts_categories.id = ${id} RETURNING id;`;
+    revalidatePath(`/posts/categories`);
 
     return deletedPostId[0];
   } catch (error) {

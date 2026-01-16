@@ -8,12 +8,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { DropDown } from "./dropdown";
-import { fetchPostsByFilter } from "@/actions/db/queries";
+import { deletePostById, fetchPostsByFilter } from "@/actions/db/queries";
 import { capitalizeFirstLetter } from "better-auth";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Eye, FilePen, Trash2 } from "lucide-react";
-import { DeleteButton } from "./delete-button";
+import { DeleteButton } from "../../delete-button";
 
 interface Props {
   currentPage: string;
@@ -109,7 +109,14 @@ export const PostTable = async ({
                     <FilePen className="size-4 text-white" />
                   </Link>
                 </Button>
-                <DeleteButton id={post.id} size="sm" />
+                <DeleteButton
+                  size="sm"
+                  id={post.id}
+                  handler={deletePostById}
+                  dialogTitle="Are you absolutely sure?"
+                  dialogDescription="This action cannot be undone. This will permanently delete your post
+                  from database."
+                />
               </div>
             </div>
           </div>

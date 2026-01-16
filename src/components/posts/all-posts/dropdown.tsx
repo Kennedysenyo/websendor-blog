@@ -6,7 +6,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { EllipsisVertical, Eye, FilePen } from "lucide-react";
 import Link from "next/link";
-import { DeleteButton } from "./delete-button";
+
+import { deletePostById } from "@/actions/db/queries";
+import { DeleteButton } from "@/components/delete-button";
 interface Props {
   id: string;
 }
@@ -44,7 +46,13 @@ export const DropDown = ({ id }: Props) => {
           variant="destructive"
           className="bg-destructive"
         >
-          <DeleteButton id={id} />
+          <DeleteButton
+            id={id}
+            handler={deletePostById}
+            dialogTitle="Are you absolutely sure?"
+            dialogDescription="This action cannot be undone. This will permanently delete your post
+            from database."
+          />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

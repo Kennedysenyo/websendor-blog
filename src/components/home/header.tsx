@@ -1,5 +1,3 @@
-import { Plus } from "lucide-react";
-import Link from "next/link";
 import { AddButton } from "../AddButton";
 
 interface Props {
@@ -30,7 +28,7 @@ export const HomeHeader = ({ name }: Props) => {
         {greeting}{" "}
         <span className="text-brand-green">{name.split(" ")[0]}</span>
       </h1>
-      <AddButton label="Add Post" />
+      <AddButton url="/posts/new" label="Add Post" />
     </div>
   );
 };

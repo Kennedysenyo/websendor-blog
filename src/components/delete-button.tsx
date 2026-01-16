@@ -14,22 +14,31 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useTransition } from "react";
-import { deletePostById } from "@/actions/db/queries";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
+import postgres from "postgres";
 
 interface Props {
   size?: "sm";
   id: string;
+  handler: (id: string) => Promise<postgres.Row>;
+  dialogTitle: string;
+  dialogDescription: string;
 }
-export const DeleteButton = ({ size, id }: Props) => {
+export const DeleteButton = ({
+  size,
+  id,
+  handler,
+  dialogTitle,
+  dialogDescription,
+}: Props) => {
   // TODO:  Change delete to delete optimistically
 
   const [pending, startTranstion] = useTransition();
 
   const handleDelete = () => {
     startTranstion(async () => {
-      const deletedPost = await deletePostById(id);
+      const deletedPost = await handler(id);
       if (deletedPost.id) {
         toast("Deleted Successfully");
       } else {
@@ -50,11 +59,8 @@ export const DeleteButton = ({ size, id }: Props) => {
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-          <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete your post
-            from database.
-          </AlertDialogDescription>
+          <AlertDialogTitle>{dialogTitle}</AlertDialogTitle>
+          <AlertDialogDescription>{dialogDescription}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
