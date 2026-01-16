@@ -16,12 +16,15 @@ import {
 import { useTransition } from "react";
 import { deletePostById } from "@/actions/db/queries";
 import { toast } from "sonner";
+import { Spinner } from "@/components/ui/spinner";
 
 interface Props {
   size?: "sm";
   id: string;
 }
 export const DeleteButton = ({ size, id }: Props) => {
+  // TODO:  Change delete to delete optimistically
+
   const [pending, startTranstion] = useTransition();
 
   const handleDelete = () => {
@@ -39,7 +42,7 @@ export const DeleteButton = ({ size, id }: Props) => {
       <AlertDialogTrigger asChild>
         <Button
           size={size}
-          className=" hover:cursor-pointer px-0 bg-destructive hover:bg-destructive/90 w-full text-start"
+          className=" hover:cursor-pointer px-0 bg-destructive hover:bg-destructive/90 lg:w-full flex justify-start"
         >
           <Trash2 className="size-4 text-white" />
           {!size && <span> Delete</span>}
@@ -58,10 +61,16 @@ export const DeleteButton = ({ size, id }: Props) => {
           <AlertDialogAction asChild>
             <Button
               onClick={handleDelete}
-              className="bg-red-500 hover:bg-red-500/90 px-0"
+              className="bg-red-500 hover:bg-red-500/90 px-0 "
             >
-              <Trash2 className="size-4 text-white" />
-              Delete
+              {pending ? (
+                <Spinner />
+              ) : (
+                <>
+                  <Trash2 className="size-4 text-white" />
+                  Delete
+                </>
+              )}
             </Button>
           </AlertDialogAction>
         </AlertDialogFooter>

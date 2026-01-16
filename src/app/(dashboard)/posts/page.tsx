@@ -1,7 +1,10 @@
 import { fetCategoriesAndPostsTotalPages } from "@/actions/db/queries";
 import { AddButton } from "@/components/AddButton";
 import { Filter } from "@/components/posts/all-posts/filter";
+import Pagination from "@/components/posts/all-posts/Paginations";
+
 import { PostTable } from "@/components/posts/all-posts/table";
+import { PostTableSkeleton } from "@/components/skeletons/post-table-skeleton";
 import { Suspense } from "react";
 
 export default async function PostsPage({
@@ -33,7 +36,7 @@ export default async function PostsPage({
       </div>
       <Suspense
         key={term + category + status + currentPage}
-        fallback={<div className="h-full bg-green">Loading...</div>}
+        fallback={<PostTableSkeleton />}
       >
         <PostTable
           currentPage={currentPage}
@@ -42,6 +45,10 @@ export default async function PostsPage({
           status={status}
         />
       </Suspense>
+
+      <div className="flex items-center justify-center mt-6">
+        <Pagination totalPages={totalPages} />
+      </div>
     </div>
   );
 }

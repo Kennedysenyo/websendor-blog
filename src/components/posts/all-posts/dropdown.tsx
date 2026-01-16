@@ -1,12 +1,12 @@
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { EllipsisVertical, Eye, FilePen, Trash2 } from "lucide-react";
+import { EllipsisVertical, Eye, FilePen } from "lucide-react";
 import Link from "next/link";
+import { DeleteButton } from "./delete-button";
 interface Props {
   id: string;
 }
@@ -44,13 +44,7 @@ export const DropDown = ({ id }: Props) => {
           variant="destructive"
           className="bg-destructive"
         >
-          <Button
-            size="sm"
-            className="flex items-center gap-2 justify-start text-white w-full hover:cursor-pointer px-0 bg-destructive hover:bg-destructive/90"
-          >
-            <Trash2 className="size-4 text-white" />
-            Delete
-          </Button>
+          <DeleteButton id={id} />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
