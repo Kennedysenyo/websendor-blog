@@ -1,6 +1,5 @@
 "use client";
 
-import { useIsMobile } from "@/hooks/use-mobile";
 import { capitalizeText } from "@/utils/capitalize-text";
 import { Search } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -64,7 +63,6 @@ export const Filter = ({ categories }: Props) => {
     });
   };
 
-  const isMobile = useIsMobile();
   return (
     <div className=" p-2 flex flex-col lg:flex-row lg:items-center gap-4 w-3/4 relative">
       <div className="flex-1">
@@ -96,7 +94,7 @@ export const Filter = ({ categories }: Props) => {
             value={filter.category}
             onChange={handleSearch}
           >
-            <option value="">{isMobile ? "Select Category" : "All"}</option>
+            <option value="">All</option>
             {categories.map((category) => (
               <option key={category.id} value={category.id}>
                 {capitalizeText(category.name)}
