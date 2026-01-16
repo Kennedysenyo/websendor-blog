@@ -5,6 +5,8 @@ import Pagination from "@/components/posts/all-posts/Paginations";
 
 import { PostTable } from "@/components/posts/all-posts/table";
 import { PostTableSkeleton } from "@/components/skeletons/post-table-skeleton";
+import { requireSession } from "@/lib/better-auth/server-auth";
+import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
 export default async function PostsPage({
@@ -17,6 +19,12 @@ export default async function PostsPage({
     status?: string;
   }>;
 }) {
+  const session = await requireSession();
+
+  if (!session) {
+    redirect("/login");
+  }
+
   const params = await searchParams;
   const term = Array.isArray(params) ? (params[0] ?? "") : params.query || "";
   const category = params.cat || "";
