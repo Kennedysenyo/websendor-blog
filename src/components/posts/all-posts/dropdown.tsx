@@ -16,13 +16,13 @@ export const DropDown = ({ id }: Props) => {
       <DropdownMenuTrigger>
         <EllipsisVertical className="border-none" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
+      <DropdownMenuContent className="space-y-1">
         <DropdownMenuItem
           asChild
-          className="bg-brand-green hover:bg-brand-hover/90"
+          className="bg-brand-green cursor-pointer hover:bg-brand-hover/90"
         >
           <Link
-            className="flex items-center gap-2 text-white"
+            className="flex items-center hover:text-white gap-2 text-white"
             href={`/posts/${id}/preview`}
           >
             <Eye className="size-4 text-white" /> <span className="">View</span>
@@ -30,7 +30,7 @@ export const DropDown = ({ id }: Props) => {
         </DropdownMenuItem>
         <DropdownMenuItem
           asChild
-          className="bg-brand-blue hover:bg-brand-blue/90"
+          className="bg-brand-blue cursor-pointer hover:bg-brand-blue/90"
         >
           <Link
             className="flex items-center gap-2 text-white"

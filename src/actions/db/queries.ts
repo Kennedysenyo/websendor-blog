@@ -193,3 +193,135 @@ export const fetchPostContentById = async (id: string) => {
     notFound();
   }
 };
+
+const ITEMS_PER_PAGE = 10;
+
+export const fetchPostsTotalPages = async (
+  term: string,
+  category: string,
+  status: string
+) => {
+  try {
+    const conditions = [];
+
+    if (term?.trim()) {
+      conditions.push(sql`
+        (
+          posts.id::TEXT ILIKE ${`%${term}%`} OR
+          posts.title ILIKE ${`%${term}%`} OR
+          posts.excerpt ILIKE ${`%${term}%`} OR
+          posts."contentMd" ILIKE ${`%${term}%`} OR
+          posts."createdAt"::text ILIKE ${`%${term}%`}
+        )
+      `);
+    }
+
+    if (category?.trim()) {
+      conditions.push(sql`
+        posts."categoryId" = ${category}
+      `);
+    }
+
+    if (status?.trim()) {
+      conditions.push(sql`
+        posts.status = ${status}
+      `);
+    }
+
+    const where = conditions.length
+      ? sql`WHERE ${conditions.reduce(
+          (acc, curr, i) => (i === 0 ? curr : sql`${acc} AND ${curr}`),
+          sql``
+        )}`
+      : sql``;
+
+    const result = await sql`
+      SELECT COUNT(*) AS total
+      FROM posts
+      ${where};
+    `;
+
+    return Number(result[0].total);
+  } catch (error) {
+    console.error(error);
+    throw new Error("Error fetching post count");
+  }
+};
+
+export const fetCategoriesAndPostsTotalPages = async (
+  term: string,
+  category: string,
+  status: string
+) => {
+  const [totalPages, categories] = await Promise.all([
+    fetchPostsTotalPages(term, category, status),
+    fetchCategories(),
+  ]);
+
+  return {
+    totalPages: Math.ceil(totalPages / ITEMS_PER_PAGE),
+    categories,
+  };
+};
+
+export const fetchPostsByFilter = async (
+  currentPage: number,
+  term: string,
+  category: string,
+  status: string
+) => {
+  try {
+    const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+    const conditions = [];
+
+    if (term?.trim()) {
+      conditions.push(sql`
+        (
+          posts.id::TEXT ILIKE ${`%${term}%`} OR
+          posts.title ILIKE ${`%${term}%`} OR
+          posts.excerpt ILIKE ${`%${term}%`} OR
+          posts."contentMd" ILIKE ${`%${term}%`} OR
+          posts."createdAt"::text ILIKE ${`%${term}%`}
+        )
+      `);
+    }
+
+    if (category?.trim()) {
+      conditions.push(sql`
+        posts."categoryId" = ${category}
+      `);
+    }
+
+    if (status?.trim()) {
+      conditions.push(sql`
+        posts.status = ${status}
+      `);
+    }
+
+    const where = conditions.length
+      ? sql`WHERE ${conditions.reduce(
+          (acc, curr, i) => (i === 0 ? curr : sql`${acc} AND ${curr}`),
+          sql``
+        )}`
+      : sql``;
+
+    const result = await sql`
+      SELECT 
+        posts.id,
+        posts.title,
+        posts.status,
+        posts_categories.name AS category
+      FROM posts
+      JOIN posts_categories
+        ON posts."categoryId" = posts_categories.id
+      ${where}
+      ORDER BY posts."createdAt" DESC
+      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset};
+    `;
+
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Error fetching posts");
+  }
+};

@@ -81,8 +81,8 @@ export const Filter = ({ categories }: Props) => {
           onChange={handleSearch}
         />
       </div>
-      <div className="lg:w-1/2 flex gap-2 items-center">
-        <div className="flex items-center gap-1 w-1/2">
+      <div className="lg:w-1/2 flex flex-col md:flex-row gap-2 items-center">
+        <div className="flex items-center gap-1 md:w-1/2">
           <label
             htmlFor="category"
             className="text-sm font-semibold text-brand-blue hidden lg:block"
@@ -96,9 +96,7 @@ export const Filter = ({ categories }: Props) => {
             value={filter.category}
             onChange={handleSearch}
           >
-            <option disabled hidden value="">
-              {isMobile ? "Select Category" : "All"}
-            </option>
+            <option value="">{isMobile ? "Select Category" : "All"}</option>
             {categories.map((category) => (
               <option key={category.id} value={category.id}>
                 {capitalizeText(category.name)}
@@ -106,7 +104,7 @@ export const Filter = ({ categories }: Props) => {
             ))}
           </select>
         </div>
-        <div className="flex items-center gap-1 w-1/2">
+        <div className="flex items-center gap-1 md:w-1/2">
           <label
             htmlFor="status"
             className="text-sm font-semibold text-brand-blue hidden lg:block"
@@ -120,9 +118,7 @@ export const Filter = ({ categories }: Props) => {
             value={filter.status}
             onChange={handleSearch}
           >
-            <option value="" hidden disabled>
-              All
-            </option>
+            <option value="">All</option>
             <option value="draft">Draft</option>
             <option value="archived">Archived</option>
             <option value="published">Published</option>
