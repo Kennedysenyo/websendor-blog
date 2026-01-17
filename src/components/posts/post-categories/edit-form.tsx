@@ -4,24 +4,29 @@ import { Button } from "../../ui/button";
 import { Spinner } from "../../ui/spinner";
 import { ChangeEvent, useActionState, useEffect, useState } from "react";
 
-import { postFormValidator } from "@/actions/posts/post-form-validator";
 import { slugify } from "@/utils/slugify";
 
 import { useRouter } from "next/navigation";
-import { CategoryFormResponseType, ResponseType } from "@/types/types";
+import { CategoryFormResponseType } from "@/types/types";
 import { createCategoryFormValidator } from "@/actions/posts/categories/create-category";
+import postgres from "postgres";
+import { editCategoryFormValidator } from "@/actions/posts/categories/edit-category";
 
 interface FormFields {
   name: string;
   slug: string;
 }
 
-export const NewCategoryForm = () => {
+interface Props {
+  category: postgres.Row;
+}
+
+export const EditCategoryForm = ({ category }: Props) => {
   const router = useRouter();
 
   const [formData, setFormData] = useState<FormFields>({
-    name: "",
-    slug: "",
+    name: category.name,
+    slug: category.slug,
   });
 
   const handleFormFieldChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -51,7 +56,7 @@ export const NewCategoryForm = () => {
   };
 
   const [state, formAction, isPending] = useActionState(
-    createCategoryFormValidator,
+    editCategoryFormValidator.bind(null, category.id),
     initialState
   );
 
@@ -70,7 +75,7 @@ export const NewCategoryForm = () => {
       <div className="bg-sidebar rounded-md shadow-md p-2 md:p-4 border border-gray-100 mx-auto flex flex-col h-full  sm:max-w-[900px]">
         <div className="relative flex items-center mb-2">
           <h3 className="text-2xl font-serif font-bold text-brand-blue">
-            New Category
+            Edit Category
           </h3>
 
           {state.errorMessage && (
@@ -98,7 +103,7 @@ export const NewCategoryForm = () => {
                   type="text"
                   name="name"
                   autoComplete="off"
-                  className="bg-white w-full px-4 py-3 rounded-sm border border-gray-200 focus:border-brand-green focus:ring-4 focus:ring-brand-green/5 outline-none transition-all"
+                  className="bg-white w-full px-4 py-3 rounded-sm border border-gray-200 focus:border-brand-blue focus:ring-4 focus:ring-brand-green/5 outline-none transition-all"
                   value={formData.name}
                   onChange={handleFormFieldChange}
                 />
@@ -121,7 +126,7 @@ export const NewCategoryForm = () => {
                   type="text"
                   name="slug"
                   autoComplete="off"
-                  className="bg-white w-full px-4 py-3 rounded-sm border border-gray-200 focus:border-brand-green focus:ring-4 focus:ring-brand-green/5 outline-none transition-all"
+                  className="bg-white w-full px-4 py-3 rounded-sm border border-gray-200 focus:border-brand-blue focus:ring-4 focus:ring-brand-green/5 outline-none transition-all"
                   value={formData.slug}
                   onChange={handleFormFieldChange}
                 />

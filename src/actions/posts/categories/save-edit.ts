@@ -1,13 +1,14 @@
 "use server";
 
 import { requireSession } from "@/lib/better-auth/server-auth";
-import { sql } from "../../../../db/db";
 import { redirect } from "next/navigation";
+import { sql } from "../../../../db/db";
 
-export const addCategory = async (
+export const saveCategoryEdit = async (
+  id: string,
   name: string,
   slug: string
-): Promise<string | null> => {
+) => {
   try {
     const session = await requireSession();
 
@@ -15,14 +16,17 @@ export const addCategory = async (
       redirect("/login");
     }
 
-    if (!name || !slug) {
-      throw new Error("Name and Slug are required");
+    if (!id || !name || !slug) {
+      throw new Error("Id, Name, and Slug are required");
     }
 
     await sql`
-  INSERT INTO posts_categories (name, slug)
-  VALUES (${name}, ${slug});
-`;
+   UPDATE posts_categories 
+   SET 
+   name = ${name}, 
+   slug = ${slug}
+   WHERE id =  ${id};
+ `;
 
     return null;
   } catch (error) {

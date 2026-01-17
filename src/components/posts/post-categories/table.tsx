@@ -52,7 +52,7 @@ export const CategoriesTable = async ({ currentPage, term }: Props) => {
                       size="sm"
                       className="bg-brand-blue hover:bg-brand-blue/90"
                     >
-                      <Link href={`/posts/cateogories/${cat.id}/edit`}>
+                      <Link href={`/posts/categories/${cat.id}/edit`}>
                         <FilePen className="size-4 text-white" />
                       </Link>
                     </Button>

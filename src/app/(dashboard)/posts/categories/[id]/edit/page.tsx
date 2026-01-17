@@ -1,14 +1,20 @@
 import { FormPageHeader } from "@/components/form-page-header";
 import { requireSession } from "@/lib/better-auth/server-auth";
 import { redirect } from "next/navigation";
-import { NewCategoryForm } from "@/components/posts/post-categories/add-form";
+import { fetchCategoryById } from "@/actions/db/queries";
+import { EditCategoryForm } from "@/components/posts/post-categories/edit-form";
 
-export default async function NewCategoryPage() {
+export default async function EditCategoryPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const session = await requireSession();
 
   if (!session) {
     redirect("/login");
   }
+  const { id } = await params;
 
   const urlList = [
     {
@@ -28,19 +34,19 @@ export default async function NewCategoryPage() {
     },
     {
       id: 4,
-      name: "New",
-      url: "/posts/categories/new",
+      name: "Edit",
+      url: `/posts/categories/${id}/edit`,
     },
   ];
-
+  const category = await fetchCategoryById(id);
   return (
     <div className="h-full flex flex-col">
       <FormPageHeader
-        title="Add Category"
-        subTitle="Fill the form below to add new category"
+        title="Edit Category"
+        subTitle="Update the data in the fields and click 'save'"
         urlList={urlList}
       />
-      <NewCategoryForm />
+      <EditCategoryForm category={category} />
     </div>
   );
 }

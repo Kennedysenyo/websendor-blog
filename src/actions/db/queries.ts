@@ -436,3 +436,18 @@ export const deleteCategoryById = async (id: string) => {
   }
   throw new Error("Failed to Delete Post");
 };
+
+export const fetchCategoryById = async (id: string) => {
+  try {
+    const category = await sql`
+      SELECT id, name, slug FROM posts_categories WHERE id = ${id}
+    `;
+    return category[0];
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+    }
+    console.error(error as string);
+    notFound();
+  }
+};
