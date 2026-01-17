@@ -43,3 +43,14 @@ export interface PostDataType {
   featuredImage: string;
   categoryId: string;
 }
+
+export interface CategoryFormErrors {
+  name?: string;
+  slug?: string;
+}
+
+export interface CategoryFormResponseType {
+  errors: CategoryFormErrors;
+  success: boolean;
+  errorMessage: string | null;
+}
