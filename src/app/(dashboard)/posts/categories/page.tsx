@@ -3,6 +3,7 @@ import { AddButton } from "@/components/AddButton";
 import Pagination from "@/components/posts/all-posts/Paginations";
 import { Filter } from "@/components/posts/post-categories/filter";
 import { CategoriesTable } from "@/components/posts/post-categories/table";
+import { CategoriesTableSkeleton } from "@/components/skeletons/categories-table-skeleton";
 import { requireSession } from "@/lib/better-auth/server-auth";
 
 import { redirect } from "next/navigation";
@@ -34,7 +35,7 @@ export default async function CategoriesPage({
         <Filter />
         <AddButton url="/posts/categories/new" label="Add Category" />
       </div>
-      <Suspense key={currentPage + term} fallback={<div>Logaind</div>}>
+      <Suspense key={currentPage + term} fallback={<CategoriesTableSkeleton />}>
         <CategoriesTable currentPage={currentPage} term={term} />
       </Suspense>
 
